@@ -2,12 +2,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+const backend = require('./backend/controller');
+const controller = require('./backend/controller');
+
 const app = express()
 
 app.set('port', (process.env.PORT || 80000));
 app.use(cors());
 app.use(bodyParser.json());
-
 
 
 app.get('/test', function(req, res){
@@ -19,6 +21,8 @@ app.get('/test', function(req, res){
     // var test = req.body.input;
     
     // res.send is used to return to frontend as a response.
+    controller.test(test);
+
     res.send(test);
     return;
 })

@@ -17,7 +17,10 @@
   },
   "homepage": "https://github.com/taylorlynn/ESEC428_G07_Backend#readme",
   "dependencies": {
+    "aws-sdk": "^2.766.0",
     "cors": "^2.8.5",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongodb": "^3.6.2",
+    "mongoose": "^5.10.7"
   }
 }
