@@ -23,6 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Add all end points here
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use("/test", testRouter);
