@@ -5,6 +5,8 @@ var cors = require("cors");
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+const controller = require('./mongo/controller');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var testRouter = require("./routes/test");
@@ -42,4 +44,23 @@ app.use(function(err, req, res, next) {
     res.render("error");
 });
 
+app.get('/testMongo', function(req, res){
+
+    // Get header information
+    var test = req.headers['input'];
+    console.log("success")
+    // Get body information
+    // var test = req.body.input;
+    
+    // res.send is used to return to frontend as a response.
+    controller.test(test);
+
+    res.send(test);
+    return;
+})
+
 module.exports = app;
+
+
+
+
