@@ -9,7 +9,8 @@ Required Dependencies:
 - npm install morgan
 - npm install cookie-parser
 
-Start server by typing: **npm start app.js** while in the backend directory
+Start server by typing: **npm start app.js** while in the backend directory.
+<br>
 All below enpoints require: http://localhost:9000/ for testing
 
 ------------------------------------------------------------
