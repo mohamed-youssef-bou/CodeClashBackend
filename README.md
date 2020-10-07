@@ -1,15 +1,17 @@
 ### ESEC428_G07_Backend
 
-Install npm for this to work.
+Install npm v6.14.8 and node v12.19.0 (LTS versions). Using nvm is also very useful in order to switch between node versions.
 
-Required Dependencies:
+Run npm install or,
+
+Individually install required dependencies:
 - npm install express
 - npm install aws-sdk
 - npm install mongodb
 - npm install morgan
 - npm install cookie-parser
 
-Start server by typing: **npm start app.js** while in the backend directory.
+Start server by typing: **npm start** while in the backend directory.
 <br>
 All below enpoints require: http://localhost:9000/ for testing
 
