@@ -1,34 +1,20 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
 
-const backend = require('./backend/controller');
-const controller = require('./backend/controller');
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
 
-const app = express()
+var app = express();
 
-app.set('port', (process.env.PORT || 80000));
-app.use(cors());
-app.use(bodyParser.json());
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
 
-app.get('/test', function(req, res){
-
-    // Get header information
-    var test = req.headers['input'];
-
-    // Get body information
-    // var test = req.body.input;
-    
-    // res.send is used to return to frontend as a response.
-    controller.test(test);
-
-    res.send(test);
-    return;
-})
-
-
-
-var server = app.listen(process.env.PORT || 8000, function () {
-    console.log('Server started...')
-})
+module.exports = app;
