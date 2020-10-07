@@ -10,15 +10,14 @@ Required Dependencies:
 - npm install cookie-parser
 
 Start server by typing: **npm start app.js** while in the backend directory
+All below enpoints require: http://localhost:9000/ for testing
 
-
-All below endpoints require: http://localhost:9000/ for testing
 ------------------------------------------------------------
 
 ### GET `/testMongo`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
-| Testing if you can connect to db.  | header: {key: value, value: [anything]} | [anything]]
+| Testing if you can connect to db.  | header: {key: value, value: [anything]} | [anything]
 
 | Errors  |
 | ------------- |
