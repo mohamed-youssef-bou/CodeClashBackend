@@ -1,4 +1,4 @@
-### ESEC428_G07_Backend
+### ECSE428_G07_Backend
 
 Install npm v6.14.8 and node v12.19.0 (LTS versions). Using nvm is also very useful in order to switch between node versions.
 
@@ -13,7 +13,7 @@ Individually install required dependencies:
 
 Start server by typing: **npm start** while in the backend directory.
 <br>
-All below enpoints require: http://localhost:9000/ for testing
+All below endpoints require: http://localhost:9000/ for testing
 
 ------------------------------------------------------------
 
