@@ -14,13 +14,13 @@ module.exports = {
 
         var connection = await MongoClient.connect(credentials.getMongoUri(), { useUnifiedTopology: true }).catch((error) => console.log(error));
         var database = connection.db(databaseName);
-
-        const defaultTest = 
         
-        await database.collection("users").insertOne({test: input});
+        response = await database.collection("users").insertOne({name: input});
 
         connection.close();
-        return "Success";
+
+        // Return object ID
+        return response.ops[0]._id;
     },
 
 }
