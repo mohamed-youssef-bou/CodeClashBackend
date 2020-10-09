@@ -19,6 +19,7 @@ All below endpoints require: http://localhost:9000/ for testing
 <br>
 To run tests, after installing jest, type ***npm run test*** from root directory
 <br>
+
 ------------------------------------------------------------
 
 ### GET `/testMongo`
