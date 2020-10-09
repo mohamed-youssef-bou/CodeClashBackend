@@ -10,11 +10,15 @@ Individually install required dependencies:
 - npm install mongodb
 - npm install morgan
 - npm install cookie-parser
+- npm install jest
 
 Start server by typing: **npm start** while in the backend directory.
 <br>
 All below endpoints require: http://localhost:9000/ for testing
-
+<br>
+<br>
+To run tests, after installing jest, type ***npm run test*** from root directory
+<br>
 ------------------------------------------------------------
 
 ### GET `/testMongo`
