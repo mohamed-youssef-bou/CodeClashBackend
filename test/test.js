@@ -41,6 +41,8 @@ describe('insert', () => {
       expect(response.username).toEqual(username);
       expect(response.email).toEqual(email);
       expect(response.score).toEqual(0);
+      expect(response.challengesCreated).toEqual('');
+      expect(response.submissions).toEqual('');
 
     });
   });
