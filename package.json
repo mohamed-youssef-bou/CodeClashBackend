@@ -7,7 +7,8 @@
   },
   "scripts": {
     "start": "node ./bin/www",
-    "test": "jest"
+    "test": "jest",
+    "dev": "nodemon ./bin/www"
   },
   "dependencies": {
     "aws-sdk": "^2.769.0",

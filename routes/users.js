@@ -4,10 +4,10 @@ var router = express.Router();
 var validator = require("validator");
 
 
-router.post('/', function(req, res) {
+router.post('/', async function(req, res) {
   // Get values from request
   var username = req.headers['username'];
-  var useremail = req.headers['useremail'];
+  var email = req.headers['email'];
   var password = req.headers['password'];
 
   //Error handling
@@ -18,7 +18,7 @@ router.post('/', function(req, res) {
     return res.status(400).send('Invalid username');
   } 
 
-  if (!validator.isEmail(useremail)) {
+  if (!validator.isEmail(email)) {
     return res.status(400).send('Invalid email address');
   }
 
@@ -26,16 +26,8 @@ router.post('/', function(req, res) {
     return res.status(400).send('Empty password');
   } 
   
-  var response = controller.create_user(username, useremail, password);
-
-  // Upon resolve of the promise
-  response.then(function(result) {
-    console.log(result);
-    if (result === "500") {
-      return res.status(result).send('Unsuccesful');
-    }
-    return res.status(result).send('Success');
-  });
+  var response = await controller.create_user(username, email, password);
+  return res.status(response[0]).send(response[1]);
 
 });
 
