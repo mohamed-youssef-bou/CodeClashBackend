@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Add all end points here
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/create-user', usersRouter);
 app.use("/test", testRouter);
 app.use("/testMongo",testMongoRouter);
 
