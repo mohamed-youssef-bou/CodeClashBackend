@@ -1,9 +1,9 @@
-var bcrypt = require('bcrypt');
 const { InternalServerError } = require('http-errors');
 
 const MongoClient = require('mongodb').MongoClient;
 // const mongoose = require('mongoose');
 const ObjectId = require('mongodb').ObjectId;
+const bcrypt = require('bcrypt');
 
 const credentials = require('./credentials');
 
@@ -16,17 +16,34 @@ const clientDetailError = ["400", "Email or username is not unique."]
 // Required for linking javascript files
 module.exports = {
 
-    test: async function(input){
-
-        var connection = await MongoClient.connect(credentials.getMongoUri(), { useUnifiedTopology: true }).catch((error) => console.log(error));
+    test: async function (input) {
+  
+        var connection = await MongoClient.connect(credentials.getMongoUri(), {useUnifiedTopology: true}).catch((error) => console.log(error));
         var database = connection.db(databaseName);
-        
+
         response = await database.collection("users").insertOne({name: input});
 
         connection.close();
 
         // Return object ID
         return response.ops[0]._id;
+    },
+
+    //used for user login
+    validatePassword: async function (username, passwordCandidate) {
+        let connection = await MongoClient.connect(credentials.getMongoUri(), {useUnifiedTopology: true}).catch((error) => console.log(error));
+        let database = connection.db(databaseName);
+
+        const user = await database.users.findOne({name: username}).catch((error) => console.log(error));
+        await connection.close();
+
+        if (!user) {
+            return [null, false];
+        }
+
+        const validate = await bcrypt.compare(passwordCandidate, user.password);
+
+        return [user, validate];
     },
 
     // Creates a user in the database
@@ -95,5 +112,4 @@ module.exports = {
         return true;
         
     },
-
 }
