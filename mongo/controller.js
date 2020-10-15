@@ -1,4 +1,3 @@
-var bcrypt = require('bcrypt');
 const { InternalServerError } = require('http-errors');
 
 const MongoClient = require('mongodb').MongoClient;
