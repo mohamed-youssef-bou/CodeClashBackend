@@ -1,17 +1,20 @@
 const MongoClient = require('mongodb').MongoClient;
 const credentials = require('../mongo/credentials');
 const controller = require('../mongo/controller');
-
 var bcrypt = require('bcrypt');
 
-// TEST: Check if inserted user is found in the mongodb database
+let databaseName = "CodeClash";
+let username_1 = "KimTastic";
+let username_2 = "KimTasticP"
+let password = "strongPassword";
+let email_1 = "this.is@goodemail.yes";
+let email_2 = "this.is@goodemail2.yes"
 
-describe('insert', () => {
+describe('Insert Success', () => {
     let connection;
     let database;
     let users;
-    let databaseName = "CodeClash";
-    var generated_id;
+    let generated_id;
   
     beforeAll(async () => {
       connection = await MongoClient.connect(credentials.getMongoUri(), {
@@ -28,18 +31,14 @@ describe('insert', () => {
     });
   
     it('Successfully inserts a user into mongodb', async () => {
-      
-      let username = "KimTastic";
-      let password = "strongPassword";
-      let email = "this.is@goodemail.yes";
 
-      await controller.create_user(username, email, password);
-      response = await users.findOne({username: username});
+      await controller.create_user(username_1, email_1, password);
+      response = await users.findOne({username: username_1});
 
       generated_id = response._id;
 
-      expect(response.username).toEqual(username);
-      expect(response.email).toEqual(email);
+      expect(response.username).toEqual(username_1);
+      expect(response.email).toEqual(email_1);
       expect(response.score).toEqual(0);
       expect(response.challengesCreated).toEqual('');
       expect(response.submissions).toEqual('');
@@ -47,17 +46,11 @@ describe('insert', () => {
     });
   });
 
-  describe('insert', () => {
+  describe('Insert Fail', () => {
     let connection;
     let database;
     let users;
-    let databaseName = "CodeClash";
-    var generated_id;
-
-    let username_1 = "KimTastic";
-    let password = "strongPassword";
-    let email_1 = "this.is@goodemail.yes";
-    let email_2 = "this.ia@goodemail.yes";
+    let generated_id;
   
     beforeAll(async () => {
       connection = await MongoClient.connect(credentials.getMongoUri(), {
@@ -84,37 +77,7 @@ describe('insert', () => {
       expect(response[1]).toEqual('Email or username is not unique.');
 
     });
-  });
 
-  describe('insert', () => {
-    let connection;
-    let database;
-    let users;
-    let databaseName = "CodeClash";
-    var generated_id;
-
-    let username_1 = "KimTastic";
-    let username_2 = "kimtastics";
-    let password = "strongPassword";
-    let email_1 = "this.is@goodemail.yes";
-  
-    beforeAll(async () => {
-      connection = await MongoClient.connect(credentials.getMongoUri(), {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-      });
-      database = connection.db(databaseName);
-      users = database.collection('users');
-      var response = await controller.create_user(username_1, email_1, password);
-      generated_id = response._id;
-      
-    });
-  
-    afterAll(async () => {
-      await users.deleteOne({_id: generated_id});
-      await connection.close();
-    });
-  
     it('Fails to insert a user with non-unique email', async () => {
       
       response = await controller.create_user(username_2, email_1, password);
