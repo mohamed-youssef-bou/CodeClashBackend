@@ -10,6 +10,14 @@ passport.use('login', new LocalStrategy(
         passwordField: 'password'
     },
     async (username, password, done) => {
+        if(!username){
+            return done(null, false, {message: "Username is required"})
+        }
+
+        if(!password){
+            return done(null, false, {message: "Please provide a password"})
+        }
+
         try {
             const [user, validate] = await controller.validatePassword(username, password)
 
