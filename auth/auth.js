@@ -3,6 +3,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const controller = require('./../mongo/controller');
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
+const validator = require("validator");
 
 passport.use('login', new LocalStrategy(
     {
@@ -10,12 +11,15 @@ passport.use('login', new LocalStrategy(
         passwordField: 'password'
     },
     async (username, password, done) => {
-        if(!username){
-            return done(null, false, {message: "Username is required"})
+        if (validator.isEmpty(username)) {
+            return done(null, false, {message: "Empty username"})
+        } else if (!validator.matches(username, '^[a-zA-Z0-9_.-]*$')) {
+            return done(null, false, {message: "Invalid username"})
+
         }
 
-        if(!password){
-            return done(null, false, {message: "Please provide a password"})
+        if (validator.isEmpty(password)) {
+            return done(null, false, {message: "Empty password"})
         }
 
         try {
