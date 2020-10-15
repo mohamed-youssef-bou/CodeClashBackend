@@ -14,7 +14,7 @@ const success = ["201", "Successfully created user."];
 const clientDetailError = ["400", "Email or username is not unique."]
 
 // Required for linking javascript files
-module.exports = {
+module.exports = { 
 
     // Creates a user in the database
     create_user: async function(username, email, password){
