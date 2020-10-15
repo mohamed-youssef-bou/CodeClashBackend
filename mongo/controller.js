@@ -16,19 +16,6 @@ const clientDetailError = ["400", "Email or username is not unique."]
 // Required for linking javascript files
 module.exports = {
 
-    test: async function(input){
-
-        var connection = await MongoClient.connect(credentials.getMongoUri(), { useUnifiedTopology: true }).catch((error) => console.log(error));
-        var database = connection.db(databaseName);
-        
-        response = await database.collection("users").insertOne({name: input});
-
-        connection.close();
-
-        // Return object ID
-        return response.ops[0]._id;
-    },
-
     // Creates a user in the database
     create_user: async function(username, email, password){
 
@@ -49,7 +36,7 @@ module.exports = {
             response = await database.collection("users").insertOne({
                 "username" : username,
                 "email" : email,
-                "password" : bcrypt.hash(password, 10),
+                "password" : await bcrypt.hash(password, 10),
                 "score" : 0,
                 "challengesCreated" : "",
                 "submissions": ""
