@@ -1,16 +1,19 @@
-### ECSE428_G07_Backend
+# CodeClash Backend
 
+### Usage
 Install npm v6.14.8 and node v12.19.0 (LTS versions). Using nvm is also very useful in order to switch between node versions.
 
 Run npm install to get all the dependencies specified in package.json
 
 Start server by typing: **npm start** while in the backend directory.
+<br>
 Start development server by typing: **yarn dev** while in the backend directory.
 <br>
+To run tests, after installing jest, type ***npm run test*** from root directory
+
+### Endpoints
 All below endpoints require: http://localhost:9000/ for testing
 <br>
-<br>
-To run tests, after installing jest, type ***npm run test*** from root directory
 <br>
 
 ------------------------------------------------------------
