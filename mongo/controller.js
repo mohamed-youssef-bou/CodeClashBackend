@@ -25,27 +25,30 @@ module.exports = {
 
     getUserById: async function(_id, res) {
         // might need to check for authentication and authorization to request this user info once those features are implemented ?
-        
-        if(_id == null) {
-            res.status(400).send({ error: "_id cannot be null"});
-            db.close();
-            return;
-        }
+
+        let serverError = [500, "Internal Server Error"];
+        let nonExistingUserError = [404, "User with this id does not exist"];
 
         var connection = await MongoClient.connect(credentials.getMongoUri(), { useUnifiedTopology: true }).catch((error) => console.log(error));
         var database = connection.db(databaseName);
 
-        userInfo = await database.collection("users").findOne({_id: ObjectId(_id)}).catch((error) => console.log(error)); 
+        try {
+            userInfo = await database.collection("users").findOne({_id: ObjectId(_id)});
+        } catch (error) {
+            console.log(error); 
+            connection.close();
+            return serverError;
+         };
+        
 
         if(userInfo == null) {
-            res.status(404).send({ error: "User with this id does not exist" });
-            db.close();
-            return;
+            connection.close();
+            return nonExistingUserError;
         }
 
-        res.send(userInfo);
-        db.close();
-        return;
+        let success = [200, userInfo];
+        connection.close();
+        return success;
     }
 
 }
