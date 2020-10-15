@@ -8,7 +8,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var testRouter = require("./routes/testFrontend");
-var testMongoRouter = require("./routes/testMongo");
+// var testMongoRouter = require("./routes/testMongo");
 
 var app = express();
 
@@ -25,9 +25,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Add all end points here
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/create-user', usersRouter);
 app.use("/test", testRouter);
-app.use("/testMongo",testMongoRouter);
+// app.use("/testMongo",testMongoRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

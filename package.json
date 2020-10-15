@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.769.0",
+    "bcrypt": "^5.0.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
@@ -23,6 +24,10 @@
     "mongodb": "^3.6.2",
     "monk": "^7.3.2",
     "morgan": "^1.9.1",
-    "travis": "^0.1.1"
+    "travis": "^0.1.1",
+    "validator": "^13.1.17"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.5"
   }
 }
