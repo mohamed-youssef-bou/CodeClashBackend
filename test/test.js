@@ -238,3 +238,37 @@ describe('Update user', () => {
   });
 
 });
+
+//Normal query user info tests
+describe('Query user info', () => {
+
+  beforeAll(async () => {
+    await dbConnection.start();
+  });
+
+  beforeEach(async () => {
+    await controller.create_user(username_1, email_1, password, dbConnection.db);
+  });
+
+  afterEach(async () => {
+    await dbConnection.cleanup();
+  });
+
+  afterAll(async () => {
+    await dbConnection.stop();
+  });
+
+  it('Successfully queries user info', async () => {
+
+    response = await controller.getUserByUsername(unsername_1, dbConnection.db)
+
+    expect(response.username).toEqual(username_1);
+    expect(response.email).toEqual(email_1);
+    expect(response.score).toEqual(0);
+    expect(response.challengesCreated).toEqual('');
+    expect(response.submissions).toEqual('');
+  });
+
+});
+
+//Error query user info tests: none
