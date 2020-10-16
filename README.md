@@ -17,7 +17,7 @@ All below endpoints require: http://localhost:9000/ for testing
 <br>
 
 ------------------------------------------------------------
-### POST `/users`
+### POST `/`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
 | Creates a user in the data base.  | header: {username,email,password} | 201, "Successfully created user."
@@ -31,7 +31,7 @@ All below endpoints require: http://localhost:9000/ for testing
 | 400, "Empty password" |
 
 ------------------------------------------------------------
-### GET `/users/:id`
+### GET `/:id`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
 | Retrieves a user object and its related info from the database.  | request param: id of user | 200, user: JSON 
@@ -60,7 +60,7 @@ All below endpoints require: http://localhost:9000/ for testing
 ### POST `/login`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
-| Login into the system  | body: {username,password} | 200, token: token string to be used for authenticated operations/endpoints 
+| Login into the system  | parameters: username, password | 200, token: token string to be used for authenticated operations/endpoints 
 
 | Errors  |
 | ------------- |
