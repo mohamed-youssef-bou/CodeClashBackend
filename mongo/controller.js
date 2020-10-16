@@ -125,7 +125,7 @@ module.exports = {
         if (user[0] != "200") return nonExistingUserError; 
 
         // Checking if new password is valid
-        if (new_password.length < 5) return passwordFormatError; 
+        if (new_password.length <= 1) return passwordFormatError; 
 
         // Checking if new username is valid
         const username_bool = await this.username_exist(database, new_username);
