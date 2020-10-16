@@ -9,7 +9,7 @@ let password = "strongPassword";
 let email_1 = "this.is@goodemail.yes";
 let email_2 = "this.is@goodemail2.yes"
 
-describe('Insert Success', () => {
+describe('Insert User', () => {
     
     beforeAll(async () => {
       await dbConnection.start();
@@ -28,8 +28,6 @@ describe('Insert Success', () => {
       await controller.create_user(username_1, email_1, password, dbConnection.db);
       response = await dbConnection.db.collection('users').findOne({username: username_1});
 
-      console.log(response);
-
       generated_id = response._id;
 
       expect(response.username).toEqual(username_1);
@@ -41,7 +39,7 @@ describe('Insert Success', () => {
     });
   });
 
-  describe('Insert Fail', () => {
+  describe('Insert user', () => {
     
     beforeAll(async () => {
       await dbConnection.start();
