@@ -280,4 +280,68 @@ describe('Query user info', () => {
 
 });
 
-//Error query user info tests: none
+describe('User login', () => {
+
+  beforeAll(async () => {
+    await dbConnection.start();
+  });
+
+  beforeEach(async () => {
+    await controller.create_user(username_1, email_1, password, dbConnection.db);
+  });
+
+  afterEach(async () => {
+    await dbConnection.cleanup();
+  });
+
+  afterAll(async () => {
+    await dbConnection.stop();
+  });
+
+  it('Successfully login user', async () => {
+
+    var response = await controller.validatePassword(username_1, password, dbConnection.db);
+
+    expect(response[1]).toEqual(true);
+    expect(response[0].username).toEqual(username_1);
+
+  });
+});
+
+
+describe('User login', () => {
+
+  beforeAll(async () => {
+    await dbConnection.start();
+  });
+
+  beforeEach(async () => {
+    await controller.create_user(username_1, email_1, password, dbConnection.db);
+  });
+
+  afterEach(async () => {
+    await dbConnection.cleanup();
+  });
+
+  afterAll(async () => {
+    await dbConnection.stop();
+  });
+
+  it('Fails to login user with incorrect username', async () => {
+
+    var response = await controller.validatePassword(username_2, password, dbConnection.db);
+
+    expect(response[1]).toEqual(false);
+    expect(response[0]).toEqual(null);
+
+  });
+
+  it('Fails to login user with incorrect password', async () => {
+
+    var response = await controller.validatePassword(username_1, 'badpassword', dbConnection.db);
+
+    expect(response[1]).toEqual(false);
+    expect(response[0].username).toEqual(username_1);
+
+  });
+});
