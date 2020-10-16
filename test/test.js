@@ -11,7 +11,7 @@ let password = "strongPassword";
 let email_1 = "this.is@goodemail.yes";
 let email_2 = "this.is@goodemail2.yes"
 
-describe('Insert User', () => {
+describe('Create user', () => {
 
   beforeAll(async () => {
     await dbConnection.start();
@@ -25,7 +25,7 @@ describe('Insert User', () => {
     await dbConnection.stop();
   });
 
-  it('Successfully inserts a user into mongodb', async () => {
+  it('Successfully creates user', async () => {
 
     await controller.create_user(username_1, email_1, password, dbConnection.db);
     response = await dbConnection.db.collection('users').findOne({username: username_1});
@@ -41,7 +41,7 @@ describe('Insert User', () => {
   });
 });
 
-describe('Insert user', () => {
+describe('Create user', () => {
 
   beforeAll(async () => {
     await dbConnection.start();
@@ -57,6 +57,15 @@ describe('Insert user', () => {
 
   afterAll(async () => {
     await dbConnection.stop();
+  });
+
+  it('Fails to insert a user with invalid password length', async () => {
+
+    response = await controller.create_user(username_2, email_2, 'a', dbConnection.db);
+
+    expect(response[0]).toEqual('400');
+    expect(response[1]).toEqual('Password format not valid.');
+
   });
 
   it('Fails to insert a user with non-unique username', async () => {

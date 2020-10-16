@@ -24,7 +24,7 @@ module.exports = {
         try {
             userInfo = await database.collection("users").findOne({"_id": ObjectId(_id)});
         } catch (error) {
-            console.log(error); 
+            //console.log(error); 
             return serverError;
          };
 
@@ -72,6 +72,10 @@ module.exports = {
 
         if (email_bool || username_bool) {
             return clientDetailError;
+        }
+
+        if(password.length <= 1){
+            return passwordFormatError;
         }
 
         try {
