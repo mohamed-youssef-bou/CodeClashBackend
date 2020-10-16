@@ -23,6 +23,7 @@
     "jade": "^1.11.0",
     "jest": "^26.5.3",
     "mongodb": "^3.6.2",
+    "mongodb-memory-server": "^6.9.2",
     "monk": "^7.3.2",
     "morgan": "^1.9.1",
     "travis": "^0.1.1",
