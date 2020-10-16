@@ -33,7 +33,7 @@ module.exports = {
     //used for user login
     validatePassword: async function (username, passwordCandidate, database) {
 
-        const user = await database.users.findOne({name: username}).catch((error) => console.log(error));
+        const user = await database.collection("users").findOne({username: username}).catch((error) => console.log(error));
 
         if (!user) {
             return [null, false];
