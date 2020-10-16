@@ -29,6 +29,24 @@ router.post('/', async function(req, res) {
   return res.status(response[0]).send(response[1]);
 });
 
+router.post('/deleteUser', async function(req, res) {
+  // Get values from request
+  var user_id = req.headers['user_id'];
+  var password = req.headers['password'];
+
+  //Error handling
+  if (validator.isEmpty(user_id)) {
+    return res.status(400).send('Empty user ID');
+  } 
+
+  if (validator.isEmpty(password)) {
+    return res.status(400).send('Empty password');
+  } 
+  
+  var response = await create_connection.delete_user(user_id, password);
+  return res.status(response[0]).send(response[1]);
+});
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
