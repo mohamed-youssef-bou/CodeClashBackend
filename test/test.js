@@ -1,5 +1,7 @@
 const controller = require('../mongo/controller');
 const DBManager = require('./helper');
+const bcrypt = require('bcrypt');
+const { getUserById } = require('../mongo/controller');
 
 const dbConnection = new DBManager();
 
@@ -76,7 +78,7 @@ describe('Insert user', () => {
   });
 });
 
-// User deletion tests
+// Normal user deletion tests
 describe('Delete user', () => {
 
   beforeAll(async () => {
@@ -102,6 +104,30 @@ describe('Delete user', () => {
     expect(response[0]).toEqual('201');
     expect(response[1]).toEqual('Successfully deleted user.');
 
+    response = await getUserById(user["_id"], dbConnection.db);
+    expect(response[0]).toEqual('404');
+    expect(response[1]).toEqual('User with this id does not exist.');
+  });
+
+});
+
+// Error user deletion tests
+describe('Delete user', () => {
+
+  beforeAll(async () => {
+    await dbConnection.start();
+  });
+
+  beforeEach(async () => {
+    await controller.create_user(username_1, email_1, password, dbConnection.db);
+  });
+
+  afterEach(async () => {
+    await dbConnection.cleanup();
+  });
+
+  afterAll(async () => {
+    await dbConnection.stop();
   });
 
   it('Fails to delete user due to non-existing user.', async () => {
@@ -110,7 +136,6 @@ describe('Delete user', () => {
 
     expect(response[0]).toEqual('404');
     expect(response[1]).toEqual('User with this id does not exist.');
-
   });
 
   it('Fails to delete user due to incorrect password.', async () => {
@@ -119,6 +144,97 @@ describe('Delete user', () => {
 
     expect(response[0]).toEqual('401');
     expect(response[1]).toEqual('Password provided is incorrect.');
+  });
+
+});
+
+// Normal update user tests
+describe('Update user', () => {
+
+  beforeAll(async () => {
+    await dbConnection.start();
+  });
+
+  beforeEach(async () => {
+    await controller.create_user(username_1, email_1, password, dbConnection.db);
+    await controller.create_user(username_2, email_2, password, dbConnection.db);
 
   });
+
+  afterEach(async () => {
+    await dbConnection.cleanup();
+  });
+
+  afterAll(async () => {
+    await dbConnection.stop();
+  });
+
+  it('Successfully updating user', async () => {
+    user = await controller.getUserByUsername(username_1, dbConnection.db); 
+    response = await controller.update_user(user["_id"], "newUsername", "newPassword", dbConnection.db);
+    
+    expect(response[0]).toEqual('201');
+    expect(response[1]).toEqual('Successfully updated user.');
+
+    response = await getUserById(user["_id"], dbConnection.db);
+    response = response[1];
+
+    expect(response.username).toEqual("newUsername");
+    var pass_check =  bcrypt.compareSync("newPassword", response.password)
+    expect(pass_check).toEqual(true); 
+  });
+
+});
+
+// Error update user tests
+describe('Update user', () => {
+
+  beforeAll(async () => {
+    await dbConnection.start();
+  });
+
+  beforeEach(async () => {
+    await controller.create_user(username_1, email_1, password, dbConnection.db);
+    await controller.create_user(username_2, email_2, password, dbConnection.db);
+
+  });
+
+  afterEach(async () => {
+    await dbConnection.cleanup();
+  });
+
+  afterAll(async () => {
+    await dbConnection.stop();
+  });
+
+  it('Fails to update user due to non-unique username.', async () => {
+    user = await controller.getUserByUsername(username_1, dbConnection.db); 
+    
+    response = await controller.update_user(user["_id"], username_2, password, dbConnection.db);
+    expect(response[0]).toEqual('400');
+    expect(response[1]).toEqual('Email or username is not unique.');
+
+    response = await getUserById(user["_id"], dbConnection.db);
+    response = response[1];
+
+    expect(response.username).toEqual(username_1);
+    var pass_check =  bcrypt.compareSync(password, response.password)
+    expect(pass_check).toEqual(true); 
+  });
+
+  it('Fails to update user due to invalid password format.', async () => {
+    user = await controller.getUserByUsername(username_1, dbConnection.db); 
+    response = await controller.update_user(user["_id"], username_1, " ", dbConnection.db);
+    
+    expect(response[0]).toEqual('400');
+    expect(response[1]).toEqual('Password format not valid.');
+
+    response = await getUserById(user["_id"], dbConnection.db);
+    response = response[1];
+
+    expect(response.username).toEqual(username_1);
+    var pass_check =  bcrypt.compareSync(password, response.password)
+    expect(pass_check).toEqual(true); 
+  });
+
 });
