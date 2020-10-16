@@ -1,5 +1,5 @@
 var express = require('express');
-var controller = require('./../mongo/controller');
+var create_connection = require('./../mongo/create_connection');
 var router = express.Router();
 var validator = require("validator");
 
@@ -25,7 +25,7 @@ router.post('/', async function(req, res) {
     return res.status(400).send('Empty password');
   } 
   
-  var response = await controller.create_user(username, email, password);
+  var response = await create_connection.create_user(username, email, password);
   return res.status(response[0]).send(response[1]);
 });
 

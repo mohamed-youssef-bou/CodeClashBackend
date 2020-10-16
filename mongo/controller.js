@@ -1,7 +1,6 @@
 const { InternalServerError } = require('http-errors');
-
 const MongoClient = require('mongodb').MongoClient;
-// const mongoose = require('mongoose');
+
 const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
 
@@ -13,21 +12,9 @@ const internalServerError = ["500", "Database action failed."];
 const success = ["201", "Successfully created user."];
 const clientDetailError = ["400", "Email or username is not unique."]
 
+
 // Required for linking javascript files
 module.exports = {
-
-    test: async function (input) {
-  
-        var connection = await MongoClient.connect(credentials.getMongoUri(), {useUnifiedTopology: true}).catch((error) => console.log(error));
-        var database = connection.db(databaseName);
-
-        response = await database.collection("users").insertOne({name: input});
-
-        connection.close();
-
-        // Return object ID
-        return response.ops[0]._id;
-    },
 
     getUserById: async function(_id, res) {
         // might need to check for authentication and authorization to request this user info once those features are implemented ?
@@ -75,10 +62,8 @@ module.exports = {
     },
 
     // Creates a user in the database
-    create_user: async function(username, email, password){
+    create_user: async function(username, email, password, database){
 
-        var connection = await MongoClient.connect(credentials.getMongoUri(), { useUnifiedTopology: true }).catch((error) => console.log(error));
-        var database = connection.db(databaseName);
         var response;
 
         // Checking if email and password are unique
@@ -86,7 +71,6 @@ module.exports = {
         const username_bool = await this.username_exist(database, username);
 
         if (email_bool || username_bool) {
-            connection.close();
             return clientDetailError;
         }
 
@@ -94,7 +78,7 @@ module.exports = {
             response = await database.collection("users").insertOne({
                 "username" : username,
                 "email" : email,
-                "password" : bcrypt.hash(password, 10),
+                "password" : await bcrypt.hash(password, 10),
                 "score" : 0,
                 "challengesCreated" : "",
                 "submissions": ""
@@ -102,11 +86,8 @@ module.exports = {
 
          } catch (e) {
             console.log(e);
-            connection.close();
             return internalServerError;
          };
-
-        connection.close();
 
         return success;
     },
