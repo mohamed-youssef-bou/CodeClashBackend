@@ -260,7 +260,7 @@ describe('Query user info', () => {
 
   it('Successfully queries user info', async () => {
 
-    response = await controller.getUserByUsername(unsername_1, dbConnection.db)
+    response = await controller.getUserByUsername(username_1, dbConnection.db)
 
     expect(response.username).toEqual(username_1);
     expect(response.email).toEqual(email_1);
