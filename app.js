@@ -10,7 +10,6 @@ const bodyParser = require('body-parser');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var testRouter = require("./routes/testFrontend");
-var testMongoRouter = require("./routes/testMongo");
 var secureRouter = require("./routes/secure-routes")
 
 var app = express();
@@ -30,7 +29,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/', usersRouter);
 app.use("/test", testRouter);
-app.use("/testMongo",testMongoRouter);
 
 // Plug in the JWT strategy as a middleware so only verified users can access this route.
 //Example:
