@@ -1,6 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const controller = require('./../mongo/controller');
+const create_connection = require('./../mongo/create_connection');
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 const validator = require("validator");
@@ -23,7 +23,7 @@ passport.use('login', new LocalStrategy(
         }
 
         try {
-            const [user, validate] = await controller.validatePassword(username, password)
+            const [user, validate] = await create_connection.validatePassword(username, password)
 
             if (!user) {
                 return done(null, false, {message: "No account exists with those credentials"});

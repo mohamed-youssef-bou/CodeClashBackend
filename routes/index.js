@@ -10,9 +10,7 @@ router.get('/', function(req, res, next) {
 });
 
 /* POST login */
-router.post(
-  '/login',
-  async (req, res, next) => {
+router.post('/login', async (req, res, next) => {
     passport.authenticate(
       'login',
       async (err, user, info) => {
