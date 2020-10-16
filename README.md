@@ -17,17 +17,6 @@ All below endpoints require: http://localhost:9000/ for testing
 <br>
 
 ------------------------------------------------------------
-
-### GET `/testMongo`
-| Usage  | Parameters | Returns |
-| ------------- | ------------- | ------------- |
-| Testing if you can connect to db.  | header: {key: value, value: [anything]} | [anything]
-
-| Errors  |
-| ------------- |
-| None |
-
-------------------------------------------------------------
 ### POST `/users`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
@@ -52,6 +41,5 @@ All below endpoints require: http://localhost:9000/ for testing
 | 500, "Internal Server Error" |
 | 404, "User with this id does not exist" |
 | 400, "\_id cannot be null" |
-
 
 ------------------------------------------------------------
