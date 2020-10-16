@@ -40,8 +40,9 @@ router.get('/:id', async function(req, res, next) {
       return;
   }
 
-  let response = await controller.getUserById(req.params.id, res);
+  let response = await create_connection.getUserById(req.params.id, res);
   res.status(response[0]).send(response[1]);
+  
 });
 
 module.exports = router;

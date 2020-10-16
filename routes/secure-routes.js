@@ -6,9 +6,7 @@ Only users with verified tokens can access the routes defined below
 Example: unused profile endpoint, only users with a verified token will be presented with the secure route message
  */
 
-router.get(
-  '/profile',
-  (req, res, next) => {
+router.get('/profile',(req, res, next) => {
     res.json({
       message: 'You made it to the secure route',
       user: req.user,

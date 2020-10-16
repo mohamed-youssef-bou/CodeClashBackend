@@ -1,12 +1,5 @@
-const { InternalServerError } = require('http-errors');
-const MongoClient = require('mongodb').MongoClient;
-
 const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
-
-const credentials = require('./credentials');
-
-const databaseName = "CodeClash";
 
 const internalServerError = ["500", "Database action failed."];
 const success = ["201", "Successfully created user."];
@@ -16,38 +9,29 @@ const clientDetailError = ["400", "Email or username is not unique."]
 // Required for linking javascript files
 module.exports = {
 
-    getUserById: async function(_id, res) {
+    getUserById: async function(_id, res, database) {
         // might need to check for authentication and authorization to request this user info once those features are implemented ?
 
         let serverError = [500, "Internal Server Error"];
         let nonExistingUserError = [404, "User with this id does not exist"];
 
-        var connection = await MongoClient.connect(credentials.getMongoUri(), { useUnifiedTopology: true }).catch((error) => console.log(error));
-        var database = connection.db(databaseName);
-
         try {
             userInfo = await database.collection("users").findOne({_id: ObjectId(_id)});
         } catch (error) {
             console.log(error); 
-            connection.close();
             return serverError;
          };
-        
 
         if(userInfo == null) {
-            connection.close();
             return nonExistingUserError;
         }
 
         let success = [200, userInfo];
-        connection.close();
         return success;
     },
 
     //used for user login
-    validatePassword: async function (username, passwordCandidate) {
-        let connection = await MongoClient.connect(credentials.getMongoUri(), {useUnifiedTopology: true}).catch((error) => console.log(error));
-        let database = connection.db(databaseName);
+    validatePassword: async function (username, passwordCandidate, database) {
 
         const user = await database.users.findOne({name: username}).catch((error) => console.log(error));
         await connection.close();
