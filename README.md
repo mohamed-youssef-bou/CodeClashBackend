@@ -43,7 +43,7 @@ All below endpoints require: http://localhost:9000/ for testing
 | 400, "\_id cannot be null" |
 
 ------------------------------------------------------------
-### GET `/login`
+### POST `/login`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
 | Login into the system  | body: {username,password} | 200, token: token string to be used for authenticated operations/endpoints 
