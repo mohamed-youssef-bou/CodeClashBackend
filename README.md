@@ -43,3 +43,20 @@ All below endpoints require: http://localhost:9000/ for testing
 | 400, "\_id cannot be null" |
 
 ------------------------------------------------------------
+### GET `/login`
+| Usage  | Parameters | Returns |
+| ------------- | ------------- | ------------- |
+| Login into the system  | body: {username,password} | 200, token: token string to be used for authenticated operations/endpoints 
+
+| Errors  |
+| ------------- |
+| 500, "Internal Server Error" |
+| 400, "Empty username" |
+| 400, "Invalid username" |
+| 400, "Empty password" |
+| 400, "No account exists with those credentials" |
+| 400, "he password you entered is incorrect" |
+
+
+------------------------------------------------------------
+
