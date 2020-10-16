@@ -3,7 +3,6 @@ var controller = require('./../mongo/controller');
 var router = express.Router();
 var validator = require("validator");
 
-
 router.post('/', async function(req, res) {
   // Get values from request
   var username = req.headers['username'];
@@ -28,7 +27,21 @@ router.post('/', async function(req, res) {
   
   var response = await controller.create_user(username, email, password);
   return res.status(response[0]).send(response[1]);
+});
 
+/* GET users listing. */
+router.get('/', function(req, res, next) {
+  res.send('respond with a resource');
+});
+
+router.get('/:id', async function(req, res, next) {
+  if(req.params.id == null) {
+      res.status(400).send({ error: "_id cannot be null"});
+      return;
+  }
+
+  let response = await controller.getUserById(req.params.id, res);
+  res.status(response[0]).send(response[1]);
 });
 
 module.exports = router;
