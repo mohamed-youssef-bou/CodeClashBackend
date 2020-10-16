@@ -43,6 +43,20 @@ All below endpoints require: http://localhost:9000/ for testing
 | 400, "\_id cannot be null" |
 
 ------------------------------------------------------------
+### POST `/deleteUser`
+| Usage  | Parameters | Returns |
+| ------------- | ------------- | ------------- |
+| Deletes a user in the data base.  | header: {user_id,password} | 201, "Successfully deleted user."
+
+| Errors  |
+| ------------- |
+| 500, "Database action failed." |
+| 404, "User with this id does not exist" |
+| 401, "Password provided is incorrect" |
+| 400, "Empty user ID" |
+| 400, "Empty password" |
+
+------------------------------------------------------------
 ### POST `/login`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
