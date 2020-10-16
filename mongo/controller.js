@@ -34,7 +34,6 @@ module.exports = {
     validatePassword: async function (username, passwordCandidate, database) {
 
         const user = await database.users.findOne({name: username}).catch((error) => console.log(error));
-        await connection.close();
 
         if (!user) {
             return [null, false];

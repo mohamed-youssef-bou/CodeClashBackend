@@ -14,6 +14,11 @@ var secureRouter = require("./routes/secure-routes")
 
 var app = express();
 
+//authentication with Passport
+// app.use(passport.initialize());
+// app.use(passport.session());
+require('./auth/auth');
+
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
