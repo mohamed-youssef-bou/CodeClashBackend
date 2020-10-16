@@ -23,7 +23,7 @@ class DBManager {
   }
 
   cleanup() {
-    return Promise.all(COLLECTIONS.map(c => this.db.collection(c).remove({})));
+    return Promise.all(COLLECTIONS.map(c => this.db.collection(c).deleteMany({})));
   }
 }
 
