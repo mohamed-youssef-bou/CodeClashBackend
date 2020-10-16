@@ -4,10 +4,14 @@ var path = require('path');
 var cors = require("cors");
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const passport = require('passport');
+const bodyParser = require('body-parser');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var testRouter = require("./routes/testFrontend");
+var testMongoRouter = require("./routes/testMongo");
+var secureRouter = require("./routes/secure-routes")
 
 var app = express();
 
@@ -25,7 +29,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Add all end points here
 app.use('/', indexRouter);
 app.use('/', usersRouter);
-app.use('/test', testRouter);
+app.use("/test", testRouter);
+app.use("/testMongo",testMongoRouter);
+
+// Plug in the JWT strategy as a middleware so only verified users can access this route.
+//Example:
+app.use('/profile', passport.authenticate('jwt', { session: false }), secureRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -42,6 +51,8 @@ app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render("error");
 });
+
+
 
 module.exports = app;
 

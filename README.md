@@ -28,7 +28,7 @@ All below endpoints require: http://localhost:9000/ for testing
 | None |
 
 ------------------------------------------------------------
-### POST `/create-user`
+### POST `/users`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
 | Creates a user in the data base.  | header: {username,email,password} | 201, "Successfully created user."
@@ -40,5 +40,18 @@ All below endpoints require: http://localhost:9000/ for testing
 | 400, "Invalid username" |
 | 400, "Invalid email address" |
 | 400, "Empty password" |
+
+------------------------------------------------------------
+### GET `/users/:id`
+| Usage  | Parameters | Returns |
+| ------------- | ------------- | ------------- |
+| Retrieves a user object and its related info from the database.  | request param: id of user | 200, user: JSON 
+
+| Errors  |
+| ------------- |
+| 500, "Internal Server Error" |
+| 404, "User with this id does not exist" |
+| 400, "\_id cannot be null" |
+
 
 ------------------------------------------------------------
