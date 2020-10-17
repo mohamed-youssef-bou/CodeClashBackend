@@ -16,7 +16,7 @@ const passwordFormatError = ["400", "Password format not valid."];
 // Required for linking javascript files
 module.exports = {
 
-    getUserById: async function(_id, database) {
+    getUserById: async function(_id, res, database) {
         // might need to check for authentication and authorization to request this user info once those features are implemented ?
 
         let serverError = ["500", "Internal Server Error"];
