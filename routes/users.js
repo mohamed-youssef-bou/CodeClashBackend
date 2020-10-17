@@ -74,11 +74,11 @@ router.put("/updateUser", async function (req, res) {
   }
 
   if (validator.isEmpty(new_username)) {
-    return res.status(400).send("Empty new username");
+    return res.status(400).send("The username you submitted is empty. Please input something");
   }
 
   if (validator.isEmpty(new_password)) {
-    return res.status(400).send("Empty new password");
+    return res.status(400).send("The password you submitted is empty. Please input something");
   }
 
   var response = await create_connection.updateUser(user_id, new_username, new_password);
