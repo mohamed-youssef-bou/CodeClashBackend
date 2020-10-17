@@ -3,7 +3,7 @@ var create_connection = require("./../mongo/create_connection");
 var router = express.Router();
 var validator = require("validator");
 
-router.post("/", async function (req, res) {
+router.post("/createUser", async function (req, res) {
   // Get values from request
   var username = req.headers["username"];
   var email = req.headers["email"];
