@@ -10,6 +10,7 @@ const nonExistingUserError = ["404", "User with this id does not exist."];
 const usernameError = ["404", "User with this username does not exist"];  
 const passwordError = ["401", "Password provided is incorrect."];  
 const passwordFormatError = ["400", "Password format not valid."];  
+const blankInputError = ["400", "Input parameters were blank"];
 
 
 
@@ -127,12 +128,40 @@ module.exports = {
         var user = await this.getUserById(user_id, database);     
         if (user[0] != "200") return nonExistingUserError; 
 
+        if (new_password.length == 0 && new_username.length == 0) return blankInputError
+        else if (new_password.length == 0) {
+            const username_bool = await this.username_exist(database, new_username);
+            if (username_bool) return clientDetailError;
+            // Updating user
+            try {
+                await database.collection("users").updateOne(
+                    {"_id": ObjectId(user_id)},
+                    {
+                    $set: { 
+                        "username": new_username, 
+                    },
+                    $currentDate: { lastModified: true }
+                    }
+                )
+                return updateSuccess;
+            } catch (e) {
+                console.log(e);
+                return internalServerError;
+            };
+        }
+
+
         // Checking if new password is valid
-        if (new_password.length <= 1) return passwordFormatError; 
+        if (new_password.length == 1) return passwordFormatError; 
 
         // Checking if new username is valid
-        const username_bool = await this.username_exist(database, new_username);
-        if (username_bool) return clientDetailError;
+        if (new_username.length > 0) {
+            const username_bool = await this.username_exist(database, new_username);
+            if (username_bool) return clientDetailError;
+        }
+        else {
+            new_username = user[1].username; 
+        }
         
         // Updating user
         try {
