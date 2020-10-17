@@ -74,7 +74,7 @@ All below endpoints require: http://localhost:9000/ for testing
 ### PUT `/updateUser`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
-| Updates a user's password and username in the system  | parameters: id, username, password | 200
+| Updates a user's password and username in the system  | parameters: user_id, new_username, new_password | 200
 
 | Errors  |
 | ------------- |
