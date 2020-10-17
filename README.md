@@ -68,8 +68,23 @@ All below endpoints require: http://localhost:9000/ for testing
 | 400, "Empty username" |
 | 400, "Invalid username" |
 | 400, "Empty password" |
-| 400, "No account exists with those credentials" |
+| 404, "User with this id does not exist" |
 | 400, "he password you entered is incorrect" |
+
+### PUT `/updateUser`
+| Usage  | Parameters | Returns |
+| ------------- | ------------- | ------------- |
+| Updates a user's password and username in the system  | parameters: id, username, password | 200
+
+| Errors  |
+| ------------- |
+| 500, "Internal Server Error" |
+| 400, "Empty user ID" |
+| 400, "The username you submitted is empty. Please input something" |
+| 400, "The password you submitted is empty. Please input something" |
+| 404, "User with this id does not exist" |
+| 400, "Password format is not valid" |
+| 400, "Email or username is not unique" |
 
 
 ------------------------------------------------------------
