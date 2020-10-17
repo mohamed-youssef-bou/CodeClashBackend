@@ -17,7 +17,7 @@ All below endpoints require: http://localhost:9000/ for testing
 <br>
 
 ------------------------------------------------------------
-### POST `/`
+### POST `/createUser`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
 | Creates a user in the data base.  | header: {username,email,password} | 201, "Successfully created user."
