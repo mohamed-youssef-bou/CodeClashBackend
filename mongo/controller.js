@@ -160,7 +160,7 @@ module.exports = {
         // Checking if new username is valid
         if (new_username.length > 0) {
             const username_bool = await this.username_exist(database, new_username);
-            if (username_bool) return clientDetailError;
+            if (username_bool) return clientDetailErrorUser;
         }
         else {
             new_username = user[1].username; 

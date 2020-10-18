@@ -9,7 +9,8 @@ let username_1 = "KimTastic";
 let username_2 = "KimTasticP";
 let password = "strongPassword";
 let email_1 = "this.is@goodemail.yes";
-let email_2 = "this.is@goodemail2.yes"
+let email_2 = "this.is@goodemail2.yes";
+let email_3 = "test";
 
 describe('Create user', () => {
 
@@ -59,7 +60,7 @@ describe('Create user', () => {
     await dbConnection.stop();
   });
 
-  it('Fails to insert a user with invalid password length', async () => {
+  it('Fails to insert a user with invalid password format', async () => {
 
     response = await controller.create_user(username_2, email_2, 'a', dbConnection.db);
 
@@ -73,7 +74,7 @@ describe('Create user', () => {
     response = await controller.create_user(username_1, email_2, password, dbConnection.db);
 
     expect(response[0]).toEqual('400');
-    expect(response[1]).toEqual('Email or username is not unique.');
+    expect(response[1]).toEqual('Username is not unique.');
 
   });
 
@@ -82,9 +83,10 @@ describe('Create user', () => {
     response = await controller.create_user(username_2, email_1, password, dbConnection.db);
 
     expect(response[0]).toEqual('400');
-    expect(response[1]).toEqual('Email or username is not unique.');
+    expect(response[1]).toEqual('Email is not unique.');
 
   });
+
 });
 
 // Normal user deletion tests
@@ -221,7 +223,7 @@ describe('Update user', () => {
     
     response = await controller.update_user(user["_id"], username_2, password, dbConnection.db);
     expect(response[0]).toEqual('400');
-    expect(response[1]).toEqual('Email or username is not unique.');
+    expect(response[1]).toEqual('Username is not unique.');
 
     response = await getUserById(user["_id"], dbConnection.db);
     response = response[1];
