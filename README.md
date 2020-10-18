@@ -46,7 +46,7 @@ All below endpoints require: http://localhost:9000/ for testing
 ### POST `/deleteUser`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
-| Deletes a user in the data base.  | header: {user_id,password} | 201, "Successfully deleted user."
+| Deletes a user in the data base.  | body: {user_id,password} | 201, "Successfully deleted user."
 
 | Errors  |
 | ------------- |
