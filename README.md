@@ -60,16 +60,16 @@ All below endpoints require: http://localhost:9000/ for testing
 ### POST `/login`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
-| Login into the system  | parameters: username, password | 200, token: token string to be used for authenticated operations/endpoints 
+| Login into the system  | **parameters**: username, password | 200, token: token string to be used for authenticated operations/endpoints 
+
+
+Following what was written in the Gherkin Feature file:
 
 | Errors  |
 | ------------- |
 | 500, "Internal Server Error" |
-| 400, "Empty username" |
-| 400, "Invalid username" |
-| 400, "Empty password" |
-| 404, "User with this id does not exist" |
-| 400, "he password you entered is incorrect" |
+| 404, "No account exists with those credentials" |
+| 400, "The password you entered is incorrect" |
 
 ### PUT `/updateUser`
 | Usage  | Parameters | Returns |
