@@ -10,17 +10,18 @@ router.post("/createUser", async function (req, res) {
   var password = req.body["password"];
   //Error handling
   if (validator.isEmpty(username)) {
-    return res.status(400).send("Empty username");
+    return res.status(400).send("Missing username parameter");
   } else if (!validator.matches(username, "^[a-zA-Z0-9_.-]*$")) {
     return res.status(400).send("Invalid username");
   }
-
-  if (!validator.isEmail(email)) {
-    return res.status(400).send("Invalid email address");
+  if (validator.isEmpty(email)) {
+    return res.status(400).send("Missing email parameter");
+  } else if (!validator.isEmail(email)) {
+    return res.status(400).send("Email format not valid.");
   }
 
   if (validator.isEmpty(password)) {
-    return res.status(400).send("Empty password");
+    return res.status(400).send("Missing password parameter");
   }
 
   var response = await create_connection.create_user(username, email, password);

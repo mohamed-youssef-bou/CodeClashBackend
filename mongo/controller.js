@@ -5,14 +5,13 @@ const creationSuccess = ["201", "Successfully created user."];
 const deletionSuccess = ["201", "Successfully deleted user."];
 const updateSuccess = ["201", "Successfully updated user."];
 const internalServerError = ["500", "Database action failed."];
-const clientDetailError = ["400", "Email or username is not unique."]
+const clientDetailErrorUser = ["400", "Username is not unique."]
+const clientDetailErrorEmail = ["400", "Email is not unique."]
 const nonExistingUserError = ["404", "User with this id does not exist."];
 const usernameError = ["404", "User with this username does not exist"];  
 const passwordError = ["401", "Password provided is incorrect."];  
-const passwordFormatError = ["400", "Password format not valid."];  
+const passwordFormatError = ["400", "Password format not valid."]; 
 const blankInputError = ["400", "Input parameters were blank"];
-
-
 
 // Required for linking javascript files
 module.exports = {
@@ -70,8 +69,12 @@ module.exports = {
         const email_bool = await this.email_exist(database, email);
         const username_bool = await this.username_exist(database, username);
 
-        if (email_bool || username_bool) {
-            return clientDetailError;
+        if (email_bool) {
+            return clientDetailErrorEmail;
+        }
+
+        if (username_bool) {
+            return clientDetailErrorUser;
         }
 
         if(password.length <= 1){
@@ -157,7 +160,7 @@ module.exports = {
         // Checking if new username is valid
         if (new_username.length > 0) {
             const username_bool = await this.username_exist(database, new_username);
-            if (username_bool) return clientDetailError;
+            if (username_bool) return clientDetailErrorUser;
         }
         else {
             new_username = user[1].username; 
