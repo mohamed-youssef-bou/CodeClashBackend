@@ -25,7 +25,7 @@ router.post("/createUser", async function (req, res) {
 
   var response = await create_connection.create_user(username, email, password);
   console.log(response);
-  return res.status(response[0]).send(response[1]);
+  return res.status(parseInt(response[0])).send(response[1]);
 });
 
 router.post("/deleteUser", async function (req, res) {
