@@ -5,10 +5,9 @@ var validator = require("validator");
 
 router.post("/createUser", async function (req, res) {
   // Get values from request
-  var username = req.headers["username"];
-  var email = req.headers["email"];
-  var password = req.headers["password"];
-
+  var username = req.body["username"];
+  var email = req.body["email"];
+  var password = req.body["password"];
   //Error handling
   if (validator.isEmpty(username)) {
     return res.status(400).send("Empty username");
@@ -25,13 +24,14 @@ router.post("/createUser", async function (req, res) {
   }
 
   var response = await create_connection.create_user(username, email, password);
+  console.log(response);
   return res.status(response[0]).send(response[1]);
 });
 
 router.post("/deleteUser", async function (req, res) {
   // Get values from request
-  var user_id = req.headers["user_id"];
-  var password = req.headers["password"];
+  var user_id = req.body["user_id"];
+  var password = req.body["password"];
 
   //Error handling
   if (validator.isEmpty(user_id)) {
@@ -64,9 +64,9 @@ router.get("/:id", async function (req, res, next) {
 /* Update User Info */
 router.put("/updateUser", async function (req, res) {
   // Get values from request
-  var user_id = req.headers["user_id"];
-  var new_username = req.headers["new_username"];
-  var new_password = req.headers["new_password"];
+  var user_id = req.body["user_id"];
+  var new_username = req.body["new_username"];
+  var new_password = req.body["new_password"];
 
   //Error handling
   if (validator.isEmpty(user_id)) {
