@@ -14,9 +14,6 @@ var secureRouter = require("./routes/secure-routes")
 
 var app = express();
 
-//authentication with Passport
-// app.use(passport.initialize());
-// app.use(passport.session());
 require('./auth/auth');
 
 // view engine setup

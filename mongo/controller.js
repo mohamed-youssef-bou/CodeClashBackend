@@ -215,4 +215,8 @@ module.exports = {
         return true;
         
     },
+
+    getAllActiveChallenges: async function(database){       
+        return await database.collection("challenges").find({dateClosed: null}).toArray();
+    }
 }
