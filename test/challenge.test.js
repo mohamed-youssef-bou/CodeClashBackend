@@ -16,6 +16,7 @@ const description = "Given a list of x and y coordinates that make up a 2D funct
 const functionSignature = "int maxHeight(std::vector<tuple<int, int>>)"
 const localTests = "[{\"input\": [(1,2), (2,2), (3,4)]}], \"output\": 2";
 const solution = "int maxHeight(std::vector<tuple<int, int>>){return 2}";
+const languages = "c++";
 const dateCreated = new Date();
 const dateClosed = null;
 
