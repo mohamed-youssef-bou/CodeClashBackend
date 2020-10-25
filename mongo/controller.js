@@ -17,13 +17,14 @@ const blankInputError = ["400", "Input parameters were blank"];
 const challengeMissingName = ["400", "Missing challenge name parameter"];
 const challengeNameExists = ["400", "Challenge name is not unique"];
 const challengeMissingCreatorID = ["400", "Missing creator id parameter"];
-const challengeDescriptionMissing = ["400", "Missing challenge description parameter"];
+const challengeMissingDescription = ["400", "Missing challenge description parameter"];
+const challengeMissingLanguage = ["400", "Missing challenge language parameter"];
 const challengeMissingFuncSig = ["400", "Missing function signature parameter"];
 const challengeMissingImplementation = ["400", "Missing implementation parameter"];
 const challengeMissingLocalTests = ["400", "Missing local test cases parameter"];
-const challengeInvalidLocalTests = ["400", "Local tests provided are not valid"];
+const challengeInvalidLocalTests = ["400", "Provided local tests are not valid"];
 const challengeMissingHiddenTests = ["400", "Missing hidden test cases parameter"];
-const challengeInvalidHiddenTests = ["400", "Hidden tests provided are not valid"];
+const challengeInvalidHiddenTests = ["400", "Provided hidden tests are not valid"];
 
 // Required for linking javascript files
 module.exports = {
@@ -240,7 +241,7 @@ module.exports = {
     },
 
     // Creates a challenge
-    createChallenge: async function (database, challengeName, creatorId, description, funcSignature, solution, localTests, hiddenTests) {
+    createChallenge: async function (database, challengeName, creatorId, description, language, funcSignature, solution, localTests, hiddenTests) {
         if (validator.isEmpty(challengeName.trim())) {
             return challengeMissingName;
         }
@@ -258,7 +259,11 @@ module.exports = {
         }
 
         if (validator.isEmpty(description.trim())) {
-            return challengeDescriptionMissing;
+            return challengeMissingDescription;
+        }
+
+        if (validator.isEmpty(language.trim())) {
+            return challengeMissingLanguage;
         }
 
         if (validator.isEmpty(funcSignature.trim())) {
@@ -290,6 +295,7 @@ module.exports = {
                 "challengeName": challengeName,
                 "creatorId": creatorId,
                 "description": description,
+                "language": language,
                 "functionSignature": funcSignature,
                 "localTests": JSON.parse(localTests),
                 "hiddenTests": JSON.parse(hiddenTests),
@@ -298,7 +304,7 @@ module.exports = {
                 "dateClosed": null,
             });
 
-            return ["201", "Successfully created the challenge. Challenge ID: " + response["insertedId"]]
+            return ["201", "Successfully created the challenge"]
 
         } catch (e) {
             console.log(e);
