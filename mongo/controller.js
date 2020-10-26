@@ -246,7 +246,7 @@ module.exports = {
             return challengeMissingName;
         }
 
-        if (await this.challengeNameExists(challengeName)) {
+        if (await this.challengeNameExists(database, challengeName)) {
             return challengeNameExists;
         }
 
@@ -278,7 +278,7 @@ module.exports = {
             return challengeMissingLocalTests;
         }
 
-        if (validator.isJSON(localTests)) {
+        if (!validator.isJSON(localTests)) {
             return challengeInvalidLocalTests;
         }
 
@@ -286,7 +286,7 @@ module.exports = {
             return challengeMissingHiddenTests;
         }
 
-        if (validator.isJSON(hiddenTests)) {
+        if (!validator.isJSON(hiddenTests)) {
             return challengeInvalidHiddenTests;
         }
 
