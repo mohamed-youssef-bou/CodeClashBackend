@@ -25,6 +25,9 @@ const challengeMissingLocalTests = ["400", "Missing local test cases parameter"]
 const challengeInvalidLocalTests = ["400", "Provided local tests are not valid"];
 const challengeMissingHiddenTests = ["400", "Missing hidden test cases parameter"];
 const challengeInvalidHiddenTests = ["400", "Provided hidden tests are not valid"];
+const challengeDoesNotExist = ["400", "Challenge does not exist"];
+const challengeAlreadyClosed = ["400", "Challenge already closed!"];
+const challengeCloserIdMatchError = ["400", "Closer ID does not match creator ID."];
 
 // Required for linking javascript files
 module.exports = {
@@ -57,6 +60,33 @@ module.exports = {
         if (user == null) return usernameError;
 
         return user
+    },
+
+    getChallengeById: async function (_id, database) {
+        let serverError = ["500", "Internal Server Error"];
+
+        try {
+            challengeInfo = await database.collection("challenges").findOne({"_id": ObjectId(_id)});
+        } catch (error) {
+            return serverError;
+        }
+
+        if (challengeInfo == null) {
+            return challengeDoesNotExist;
+        }
+
+        let creationSuccess = ["200", challengeInfo];
+        return creationSuccess;
+    },
+
+    getChallengeByName: async function (challengeName, database) {
+        var challenge = await database.collection("challenges").findOne({
+            challengeName: {$eq: challengeName}
+        });
+
+        if (challenge == null) return challengeDoesNotExist;
+
+        return challenge
     },
 
     //used for user login
@@ -311,6 +341,49 @@ module.exports = {
             return internalServerError;
         }
     },
+
+    // Closes a challenge
+    closeChallenge: async function (database, creatorId, challengeName, challengeId) {
+        // Error check 
+        if (validator.isEmpty(challengeName.trim())) return challengeMissingName;
+        
+        if (!(await this.challengeNameExists(database, challengeName))) return challengeDoesNotExist;
+        
+        if (validator.isEmpty(creatorId.trim())) return challengeMissingCreatorID;
+        
+        if (await database.collection("users").findOne({"_id": ObjectId(creatorId)}) == null) 
+            return nonExistingUserError;
+         
+        // Grab challenge info
+        challengeInfo = await this.getChallengeById(challengeId, database);
+        if (challengeInfo[0] == "200") challengeInfo = challengeInfo[1];
+        else return challengeInfo[1];
+        
+        // Check if closer Id matches Creator id
+        if (challengeInfo.creatorId != creatorId) return challengeCloserIdMatchError;
+
+        // Check if challenge has been closed already
+        dateClosed = challengeInfo.dateClosed; 
+        if (dateClosed != null) return challengeAlreadyClosed;
+        // Close challenge
+        try {
+            await database.collection("challenges").updateOne(
+                {"_id": ObjectId(challengeId)},
+                {
+                    $set: {
+                        "dateClosed": new Date(),
+                    },
+                    $currentDate: {lastModified: true}
+                }
+            )
+            return ["201", "Successfully closed the challenge"]
+
+        } catch (e) {
+            console.log(e);
+            return internalServerError;
+        }
+    },
+
 
     getAllActiveChallenges: async function (database) {
         return await database.collection("challenges").find({dateClosed: null}).toArray();
