@@ -78,7 +78,7 @@ describe('Query all challenges', () => {
       expect(response[1]).toEqual('Successfully closed the challenge');
     });
 
-    it('Closing a challenge that is already closed', async () => {
+    it('Failed to close challenge because challenge is already closed', async () => {
       var challenge = await controller.getChallengeByName(challengeName, dbConnection.db); 
       var challengeId = challenge["_id"].toString();
       var user = await controller.getUserByUsername(username, dbConnection.db); 
