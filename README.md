@@ -117,7 +117,7 @@ Following what was written in the Gherkin Feature file:
 ### POST `/closeChallenge`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
-| Create a new challenge  | **parameters**: challengeName, creatorId, description, language, funcSignature, localTests, hiddenTests | 201, "Successfully created the challenge" 
+| Closing a challenge  | **parameters**: challengeName, creatorId, challengeId | 201, "Successfully closed the challenge" 
 
 
 Following what was written in the Gherkin Feature file:
