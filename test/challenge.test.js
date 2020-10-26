@@ -54,7 +54,7 @@ describe('Query all challenges', () => {
       await controller.create_user(username, email, password, dbConnection.db);
       var user = await controller.getUserByUsername(username, dbConnection.db); 
       var creatorId = user["_id"].toString(); 
-      var test = await controller.createChallenge(dbConnection.db, challengeName, creatorId, 
+      await controller.createChallenge(dbConnection.db, challengeName, creatorId, 
                                        description, languages, funcSignature, 
                                        solution, localTests, hiddenTests);
     });

@@ -55,7 +55,29 @@ router.post("/createChallenge", async function (req, res) {
                                                            language, funcSignature, solution, localTests, 
                                                            hiddenTests);
     return res.status(parseInt(response[0])).send(response[1]);
-  });
+});
 
+router.post("/closeChallenge", async function (req, res) {
+    // Get values from request
+    var creatorId = req.body["creatorId"];
+    var challengeName = req.body["challengeName"];
+    var challengeId = req.body["challengeId"];
+
+    //Error handling
+    if (validator.isEmpty(challengeName)) {
+        return res.status(400).send("Missing challenge name parameter");
+    } 
+
+    if (validator.isEmpty(creatorId)) {
+        return res.status(400).send("Missing creator id parameter");
+    } 
+
+    if (validator.isEmpty(challengeId)) {
+        return res.status(400).send("Missing challenge id parameter");
+    }   
+
+    var response = await create_connection.closeChallenge(creatorId, challengeName, challengeId);
+    return res.status(parseInt(response[0])).send(response[1]);
+});
 
 module.exports = router;
