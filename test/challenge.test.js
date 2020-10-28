@@ -12,6 +12,7 @@ const email = "timmy.tip@gemini.com";
 
 // Creating challenge
 const challengeName = "Max Height";
+const challengeName2 = "Max Height 2.0";
 const description = "Given a list of x and y coordinates that make up a 2D function, find the 2 points, (x, y) coordinates, upon where there is the largest increase from one point to another in the y axis and return the difference in height.";
 const funcSignature = "int maxHeight(std::vector<tuple<int, int>>)"
 const localTests = "{\"input\": \"[(1,2), (2,2), (3,4)]}]\", \"output\": 2}";
@@ -24,11 +25,21 @@ describe('Query all challenges', () => {
     beforeAll(async () => {
       await dbConnection.start();
     });
+
+    beforeEach(async () => {
+      await controller.create_user(username, email, password, dbConnection.db);
+      var user = await controller.getUserByUsername(username, dbConnection.db); 
+      var creatorId = user["_id"].toString(); 
+      await controller.createChallenge(dbConnection.db, challengeName, creatorId, 
+                                       description, languages, funcSignature, 
+                                       solution, localTests, hiddenTests);
+      await controller.createChallenge(dbConnection.db, challengeName2, creatorId, 
+                                        description, languages, funcSignature, 
+                                        solution, localTests, hiddenTests);
+    });
   
     afterEach(async () => {
       await dbConnection.cleanup();
-      await controller.create_user(username, email, password, dbConnection.db);
-      //await controller.create_challenge();
     });
   
     afterAll(async () => {
@@ -38,8 +49,17 @@ describe('Query all challenges', () => {
     it('Successfully queries all challenges', async () => {
   
       var response = await controller.getAllActiveChallenges(dbConnection.db);
-      console.log(response);
-  
+      
+      expect(response.length).toEqual(2);
+      expect(response[0].challengeName).toEqual(challengeName);
+      expect(response[1].challengeName).toEqual(challengeName2);
+
+      // Get user id
+      var author = await controller.getUserById(response[0].creatorId, dbConnection.db);
+
+      expect(author[1].username).toEqual(username);
+      expect(response[0].language).toEqual(languages);
+    
     });
 
   });
