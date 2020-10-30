@@ -65,7 +65,7 @@ describe('Query all challenges', () => {
 
     it('Alternative querying of all challenges', async () => {
       var challengeId = await controller.getChallengeByName(challengeName2, dbConnection.db);
-      var response = await controller.deleteChallenge(challengeId._id, challengeName2, username, dbConnection.db);
+      await controller.deleteChallenge(challengeId._id, challengeName2, username, dbConnection.db);
       var response = await controller.getAllActiveChallenges(dbConnection.db);
 
       expect(response.length).toEqual(1);

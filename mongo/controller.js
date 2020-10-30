@@ -28,7 +28,7 @@ const challengeInvalidHiddenTests = ["400", "Provided hidden tests are not valid
 const challengeDoesNotExist = ["400", "Challenge does not exist"];
 const challengeAlreadyClosed = ["400", "Challenge already closed!"];
 const challengeCloserIdMatchError = ["400", "Closer ID does not match creator ID."];
-const challengeIncorrectAuthor = ["400", "Incorrect author"];
+const challengeIncorrectAuthor = ["400", "Incorrect author."];
 const nonExistingChallenge = ["404", "Challenge doesn't exist."];
 
 // Required for linking javascript files
