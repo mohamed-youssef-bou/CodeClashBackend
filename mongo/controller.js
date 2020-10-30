@@ -28,6 +28,8 @@ const challengeInvalidHiddenTests = ["400", "Provided hidden tests are not valid
 const challengeDoesNotExist = ["400", "Challenge does not exist"];
 const challengeAlreadyClosed = ["400", "Challenge already closed!"];
 const challengeCloserIdMatchError = ["400", "Closer ID does not match creator ID."];
+const challengeIncorrectAuthor = ["400", "Incorrect author"];
+const nonExistingChallenge = ["404", "Challenge doesn't exist."];
 
 // Required for linking javascript files
 module.exports = {
@@ -387,5 +389,36 @@ module.exports = {
 
     getAllActiveChallenges: async function (database) {
         return await database.collection("challenges").find({dateClosed: null}).toArray();
-    }
+    },
+
+    // Deletes a user in the database
+    deleteChallenge: async function (challengeId, challengeTitle, author, database) {
+
+        // Checking if account exists
+        var challenge = await database.collection("challenges").findOne({_id: ObjectId(challengeId), challengeName: challengeTitle});
+        
+        if(challenge == null) {
+            return nonExistingChallenge;
+        }
+
+        var user = await this.getUserById(challenge.creatorId, database);
+
+        if(user == null) {
+            return nonExistingUserError;
+        }
+
+        // Check to make sure the author is deleting the challenge.
+        if(user[1].username.toLowerCase() != author.toLowerCase()){
+            return challengeIncorrectAuthor;
+        }
+
+        try {
+            response = await database.collection("challenges").deleteOne({_id: ObjectId(challengeId)});
+        } catch (e) {
+            console.log(e);
+            return internalServerError;
+        }
+
+        return [200, 'Successfully deleted challenge.'];
+    },
 }
