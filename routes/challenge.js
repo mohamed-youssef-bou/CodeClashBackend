@@ -80,4 +80,28 @@ router.post("/closeChallenge", async function (req, res) {
     return res.status(parseInt(response[0])).send(response[1]);
 });
 
+router.post("/deleteChallenge", async function (req, res) {
+
+     var challengeId = req.body["challengeId"];
+     var challengeTitle = req.body["challengeName"];
+     var author = req.body["author"];
+
+     //Error handling
+    if (validator.isEmpty(challengeId)) {
+        return res.status(400).send("Challenge does not exist.");
+    } 
+
+    if (validator.isEmpty(challengeTitle)) {
+        return res.status(400).send("Challenge name is empty.");
+    } 
+
+    if (validator.isEmpty(author)) {
+        return res.status(400).send("Missing author parameter.");
+    } 
+
+    var response = await create_connection.deleteChallenge(challengeId, challengeTitle, author);
+    return res.status(parseInt(response[0])).send(response[1]);
+
+});
+
 module.exports = router;
