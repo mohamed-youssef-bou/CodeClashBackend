@@ -20,6 +20,140 @@ const hiddenTests = "{\"input\": \"[(5,5), (1,8), (1,23)]}]\", \"output\": 15}";
 const solution = "int maxHeight(std::vector<tuple<int, int>>){return 2}";
 const languages = "c++";
 
+describe('Create Challenge', () => {
+
+    let creatorId;
+
+    beforeAll(async () => {
+        await dbConnection.start();
+    });
+
+    beforeEach(async () => {
+        await controller.create_user(username, email, password, dbConnection.db);
+        let user = await controller.getUserByUsername(username, dbConnection.db);
+        creatorId = user["_id"].toString();
+    });
+
+    afterEach(async () => {
+        await dbConnection.cleanup();
+    });
+
+    afterAll(async () => {
+        await dbConnection.stop();
+    });
+
+    it('Successfully creates challenge', async () => {
+        let response = await controller.createChallenge(dbConnection.db, challengeName, creatorId,
+            description, languages, funcSignature,
+            solution, localTests, hiddenTests);
+        expect(response.length).toEqual(2);
+        expect(parseInt(response[0])).toEqual(201);
+        expect(response[1]).toEqual("Successfully created the challenge");
+
+        let expectedChallenge = {
+            "challengeName": challengeName,
+            "creatorId": creatorId,
+            "description": description,
+            "language": languages,
+            "functionSignature": funcSignature,
+            "localTests": JSON.parse(localTests),
+            "hiddenTests": JSON.parse(hiddenTests),
+            "solution": solution,
+        };
+        let returnedChallenge = await controller.getChallengeByName(challengeName, dbConnection.db);
+        expect(returnedChallenge).toMatchObject(expectedChallenge);
+
+    });
+
+    it('Missing name', async () => {
+        let response = await controller.createChallenge(dbConnection.db, "  ", creatorId,
+            description, languages, funcSignature,
+            solution, localTests, hiddenTests);
+        expect(response.length).toEqual(2);
+        expect(parseInt(response[0])).toEqual(400);
+        expect(response[1]).toEqual("Missing challenge name parameter");
+    });
+
+    it('Existing name', async () => {
+        //create challenge before checking that duplicate creation will fail
+        await controller.createChallenge(dbConnection.db, challengeName, creatorId,
+            description, languages, funcSignature,
+            solution, localTests, hiddenTests);
+
+        let response = await controller.createChallenge(dbConnection.db, challengeName, creatorId,
+            description, languages, funcSignature,
+            solution, localTests, hiddenTests);
+
+        expect(response.length).toEqual(2);
+        expect(parseInt(response[0])).toEqual(400);
+        expect(response[1]).toEqual("Challenge name is not unique");
+    });
+
+    it('Missing description', async () => {
+        let response = await controller.createChallenge(dbConnection.db, challengeName, creatorId,
+            "  ", languages, funcSignature,
+            solution, localTests, hiddenTests);
+        expect(response.length).toEqual(2);
+        expect(parseInt(response[0])).toEqual(400);
+        expect(response[1]).toEqual("Missing challenge description parameter");
+    });
+
+    it('Missing language', async () => {
+        let response = await controller.createChallenge(dbConnection.db, challengeName, creatorId,
+            description, null, funcSignature,
+            solution, localTests, hiddenTests);
+        expect(response.length).toEqual(2);
+        expect(parseInt(response[0])).toEqual(400);
+        expect(response[1]).toEqual("Missing challenge language parameter");
+    });
+
+    it('Missing function signature', async () => {
+        let response = await controller.createChallenge(dbConnection.db, challengeName, creatorId,
+            description, languages, "    ",
+            solution, localTests, hiddenTests);
+        expect(response.length).toEqual(2);
+        expect(parseInt(response[0])).toEqual(400);
+        expect(response[1]).toEqual("Missing function signature parameter");
+    });
+
+    it('Missing local tests', async () => {
+        let response = await controller.createChallenge(dbConnection.db, challengeName, creatorId,
+            description, languages, funcSignature,
+            solution, null, hiddenTests);
+        expect(response.length).toEqual(2);
+        expect(parseInt(response[0])).toEqual(400);
+        expect(response[1]).toEqual("Missing local test cases parameter");
+    });
+
+    it('Invalid local tests', async () => {
+        let response = await controller.createChallenge(dbConnection.db, challengeName, creatorId,
+            description, languages, funcSignature,
+            solution, "not valid JSON", hiddenTests);
+        expect(response.length).toEqual(2);
+        expect(parseInt(response[0])).toEqual(400);
+        expect(response[1]).toEqual("Provided local tests are not valid");
+    });
+
+    it('Missing hidden tests', async () => {
+        let response = await controller.createChallenge(dbConnection.db, challengeName, creatorId,
+            description, languages, funcSignature,
+            solution, localTests, null);
+        expect(response.length).toEqual(2);
+        expect(parseInt(response[0])).toEqual(400);
+        expect(response[1]).toEqual("Missing hidden test cases parameter");
+    });
+
+    it('Invalid hidden tests', async () => {
+        let response = await controller.createChallenge(dbConnection.db, challengeName, creatorId,
+            description, languages, funcSignature,
+            solution, localTests, "not valid JSON");
+        expect(response.length).toEqual(2);
+        expect(parseInt(response[0])).toEqual(400);
+        expect(response[1]).toEqual("Provided hidden tests are not valid");
+    });
+
+});
+
 describe('Query all challenges', () => {
 
     beforeAll(async () => {
