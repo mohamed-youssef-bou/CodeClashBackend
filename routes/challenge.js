@@ -14,44 +14,7 @@ router.post("/createChallenge", async function (req, res) {
     var hiddenTests = req.body["hiddenTests"];
     var solution = req.body["solution"];
 
-    //Error handling
-    if (validator.isEmpty(challengeName)) {
-        return res.status(400).send("Missing challenge name parameter");
-    } 
-
-    if (validator.isEmpty(creatorId)) {
-        return res.status(400).send("Missing creator id parameter");
-    } 
-
-    if (validator.isEmpty(description)) {
-        return res.status(400).send("Missing challenge description parameter");
-    }   
-
-    if (validator.isEmpty(language)) {
-        return res.status(400).send("Missing challenge language parameter");
-    }  
-
-    if (validator.isEmpty(funcSignature)) {
-        return res.status(400).send("Missing function signature parameter");
-    }     
-
-    if (validator.isEmpty(solution)) {
-        return res.status(400).send("Missing implementation parameter");
-    }  
-
-    if (validator.isEmpty(localTests)) {
-        return res.status(400).send("Missing local test cases parameter");
-    } else if (!validator.isJSON(localTests)){
-        return res.status(400).send("Provided local tests are not valid");
-    }
-
-    if (validator.isEmpty(hiddenTests)) {
-        return res.status(400).send("Missing hidden test cases parameter");
-    } else if (!validator.isJSON(hiddenTests)){
-        return res.status(400).send("Provided hidden tests are not valid");
-    }
-  
-    var response = await create_connection.createChallenge(challengeName, creatorId, description, 
+    var response = await create_connection.createChallenge(challengeName, creatorId, description,
                                                            language, funcSignature, solution, localTests, 
                                                            hiddenTests);
     return res.status(parseInt(response[0])).send(response[1]);
