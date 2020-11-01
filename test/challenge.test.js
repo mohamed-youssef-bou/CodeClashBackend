@@ -171,6 +171,7 @@ describe('Query all challenges', () => {
       await controller.createChallenge(dbConnection.db, challengeName2, creatorId, 
                                         description, languages, funcSignature, 
                                         solution, localTests, hiddenTests);
+    
     });
   
     afterEach(async () => {
@@ -182,7 +183,7 @@ describe('Query all challenges', () => {
     });
   
     it('Successfully queries all challenges', async () => {
-  
+
       var response = await controller.getAllActiveChallenges(dbConnection.db);
       
       expect(response.length).toEqual(2);
@@ -193,6 +194,17 @@ describe('Query all challenges', () => {
       var author = await controller.getUserById(response[0].creatorId, dbConnection.db);
 
       expect(author[1].username).toEqual(username);
+      expect(response[0].language).toEqual(languages);
+    
+    });
+
+    it('Alternative querying of all challenges', async () => {
+      var challengeId = await controller.getChallengeByName(challengeName2, dbConnection.db);
+      await controller.deleteChallenge(challengeId._id, challengeName2, username, dbConnection.db);
+      var response = await controller.getAllActiveChallenges(dbConnection.db);
+
+      expect(response.length).toEqual(1);
+      expect(response[0].challengeName).toEqual(challengeName);
       expect(response[0].language).toEqual(languages);
     
     });
