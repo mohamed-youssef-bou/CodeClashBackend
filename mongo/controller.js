@@ -274,7 +274,7 @@ module.exports = {
 
     // Creates a challenge
     createChallenge: async function (database, challengeName, creatorId, description, language, funcSignature, solution, localTests, hiddenTests) {
-        if (validator.isEmpty(challengeName.trim())) {
+        if (challengeName === null || challengeName.trim() === "") {
             return challengeMissingName;
         }
 
@@ -282,7 +282,7 @@ module.exports = {
             return challengeNameExists;
         }
 
-        if (validator.isEmpty(creatorId.trim())) {
+        if (creatorId === null || creatorId.trim() === "") {
             return challengeMissingCreatorID;
         }
 
@@ -290,23 +290,23 @@ module.exports = {
             return nonExistingUserError;
         }
 
-        if (validator.isEmpty(description.trim())) {
+        if (description === null || description.trim() === "") {
             return challengeMissingDescription;
         }
 
-        if (validator.isEmpty(language.trim())) {
+        if (language === null || language.trim() === "") {
             return challengeMissingLanguage;
         }
 
-        if (validator.isEmpty(funcSignature.trim())) {
+        if (funcSignature === null || funcSignature.trim() === "") {
             return challengeMissingFuncSig;
         }
 
-        if (validator.isEmpty(solution.trim())) {
+        if (solution === null || solution.trim() === "") {
             return challengeMissingImplementation;
         }
 
-        if (validator.isEmpty(localTests)) {
+        if (localTests === null || localTests.trim() === "") {
             return challengeMissingLocalTests;
         }
 
@@ -314,7 +314,7 @@ module.exports = {
             return challengeInvalidLocalTests;
         }
 
-        if (validator.isEmpty(hiddenTests)) {
+        if (hiddenTests === null || hiddenTests.trim() === "") {
             return challengeMissingHiddenTests;
         }
 

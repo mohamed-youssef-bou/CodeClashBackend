@@ -2,7 +2,7 @@ const { MongoClient } = require('mongodb');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
 // List your collection names here
-const COLLECTIONS = [];
+const COLLECTIONS = ["challenges"];
 
 class DBManager {
   constructor() {
