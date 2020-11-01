@@ -23,6 +23,7 @@ const languages = "c++";
 describe('Create Challenge', () => {
 
     let creatorId;
+    let whiteSpace = "  ";
 
     beforeAll(async () => {
         await dbConnection.start();
@@ -66,7 +67,7 @@ describe('Create Challenge', () => {
     });
 
     it('Missing name', async () => {
-        let response = await controller.createChallenge(dbConnection.db, "  ", creatorId,
+        let response = await controller.createChallenge(dbConnection.db, whiteSpace, creatorId,
             description, languages, funcSignature,
             solution, localTests, hiddenTests);
         expect(response.length).toEqual(2);
@@ -91,7 +92,7 @@ describe('Create Challenge', () => {
 
     it('Missing description', async () => {
         let response = await controller.createChallenge(dbConnection.db, challengeName, creatorId,
-            "  ", languages, funcSignature,
+            whiteSpace, languages, funcSignature,
             solution, localTests, hiddenTests);
         expect(response.length).toEqual(2);
         expect(parseInt(response[0])).toEqual(400);
