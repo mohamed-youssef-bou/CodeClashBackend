@@ -54,11 +54,38 @@ module.exports = {
 
         return response;
     },
+    createChallenge: async function(challengeName, creatorId, description, language, funcSignature, solution, localTests, hiddenTests){
+        var connection = await MongoClient.connect(credentials.getMongoUri(), { useUnifiedTopology: true }).catch((error) => console.log(error));
+        var database = connection.db(databaseName);
+
+        var response = await controller.createChallenge(database, challengeName, creatorId, description, language, funcSignature, solution, localTests, hiddenTests);
+        connection.close();
+
+        return response;
+    },
+    closeChallenge: async function(creatorId, challengeName, challengeId){
+        var connection = await MongoClient.connect(credentials.getMongoUri(), { useUnifiedTopology: true }).catch((error) => console.log(error));
+        var database = connection.db(databaseName);
+
+        var response = await controller.closeChallenge(database, creatorId, challengeName, challengeId);
+        connection.close();
+        
+        return response;
+    },
     getAllActiveChallenges: async function(){
         var connection = await MongoClient.connect(credentials.getMongoUri(), { useUnifiedTopology: true }).catch((error) => console.log(error));
         var database = connection.db(databaseName);
 
         var response = await controller.getAllActiveChallenges(database);
+        connection.close();
+
+        return response;
+    },
+    deleteChallenge: async function(challengeId, challengeTitle, author){
+        var connection = await MongoClient.connect(credentials.getMongoUri(), { useUnifiedTopology: true }).catch((error) => console.log(error));
+        var database = connection.db(databaseName);
+
+        var response = await controller.deleteChallenge(challengeId, challengeTitle, author, database);
         connection.close();
 
         return response;

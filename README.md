@@ -97,4 +97,66 @@ Following what was written in the Gherkin Feature file:
 | 404, "User with this id does not exist" |
 
 ------------------------------------------------------------
+### POST `/createChallenge`
+| Usage  | Parameters | Returns |
+| ------------- | ------------- | ------------- |
+| Create a new challenge  | **parameters**: challengeName, creatorId, description, language, funcSignature, localTests, hiddenTests | 201, "Successfully created the challenge" 
 
+
+Following what was written in the Gherkin Feature file:
+
+| Errors  |
+| ------------- |
+| 500, "Internal Server Error" |
+| 400, "Missing challenge name parameter" |
+| 400, "Missing creator id parameter" |
+| 400, "Missing challenge description parameter" |
+| 400, "Missing challenge language parameter" |
+| 400, "Missing function signature parameter" |
+| 400, "Missing implementation parameter" |
+| 400, "Missing local test cases parameter" |
+| 400, "Provided local tests are not valid" |
+| 400, "Missing hidden test cases parameter" |
+| 400, "Provided hidden tests are not valid" |
+| 400, "Challenge does not exist" |
+| 400, "User with this id does not exist." |
+
+
+------------------------------------------------------------
+### POST `/closeChallenge`
+| Usage  | Parameters | Returns |
+| ------------- | ------------- | ------------- |
+| Closing a challenge  | **parameters**: challengeName, creatorId, challengeId | 201, "Successfully closed the challenge" 
+
+
+Following what was written in the Gherkin Feature file:
+
+| Errors  |
+| ------------- |
+| 500, "Internal Server Error" |
+| 400, "Missing challenge name parameter" |
+| 400, "Missing creator id parameter" |
+| 400, "Missing challenge id parameter" |
+| 400, "Challenge already closed!" |
+| 400, "User with this id does not exist." |
+
+------------------------------------------------------------
+### POST `/deleteChallenge`
+| Usage  | Parameters | Returns |
+| ------------- | ------------- | ------------- |
+| Delete a challenge  | **parameters**: challengeId, challengeName, author | 200, "Successfully deleted the challenge" 
+
+
+Following what was written in the Gherkin Feature file:
+
+| Errors  |
+| ------------- |
+| 500, "Internal Server Error" |
+| 404, "Challenge doesn't exist." |
+| 404, "User with this id does not exist." |
+| 404, "Incorrect author." |
+| 400, "Challenge does not exist." |
+| 400, "Challenge name is empty." |
+| 400, "Missing author parameter." |
+
+------------------------------------------------------------
