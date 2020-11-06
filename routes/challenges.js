@@ -7,7 +7,7 @@ var validator = require("validator");
 /* GET users listing. */
 router.get("/challenges", function (req, res, next) {
   let response = await create_connection.getAllActiveChallenges();
-  res.status(response[0]).send(response[1]);
+  res.status(200).send(response);
 });
 
 
