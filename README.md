@@ -86,10 +86,10 @@ Following what was written in the Gherkin Feature file:
 | 400, "Password format is not valid" |
 | 400, "Email or username is not unique" |
 
-### GET `/challenges`
+### GET `/challenges/:id`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
-| Retrieves an array of challenge objects and their related info from the database.  | none | 200, challenge: JSON Array
+| Retrieves an array of challenge objects and their related info from the database. Note that ID is required to function properly.  | none | 200, challenge: JSON Array
 
 | Errors  |
 | ------------- |
