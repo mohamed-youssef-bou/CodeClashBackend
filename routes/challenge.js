@@ -67,4 +67,10 @@ router.post("/deleteChallenge", async function (req, res) {
 
 });
 
+/* GET challenges listing. */
+router.get("/challenges", async function (req, res, next) {
+    let response = await create_connection.getAllActiveChallenges();
+    res.status(200).send(response);
+  });
+
 module.exports = router;
