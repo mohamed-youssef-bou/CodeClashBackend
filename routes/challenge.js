@@ -71,6 +71,6 @@ router.post("/deleteChallenge", async function (req, res) {
 router.get("/challenges", async function (req, res) {
     let response = await create_connection.getAllActiveChallenges();
     return res.send(response);
-  });
+});
 
 module.exports = router;
