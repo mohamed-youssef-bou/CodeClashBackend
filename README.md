@@ -109,7 +109,9 @@ Following what was written in the Gherkin Feature file:
 | ------------- |
 | 500, "Internal Server Error" |
 | 400, "Missing challenge name parameter" |
+| 400, "Challenge name is not unique" |
 | 400, "Missing creator id parameter" |
+| 404, "User with this id does not exist." |
 | 400, "Missing challenge description parameter" |
 | 400, "Missing challenge language parameter" |
 | 400, "Missing function signature parameter" |
@@ -118,9 +120,6 @@ Following what was written in the Gherkin Feature file:
 | 400, "Provided local tests are not valid" |
 | 400, "Missing hidden test cases parameter" |
 | 400, "Provided hidden tests are not valid" |
-| 400, "Challenge does not exist" |
-| 400, "User with this id does not exist." |
-
 
 ------------------------------------------------------------
 ### POST `/closeChallenge`
