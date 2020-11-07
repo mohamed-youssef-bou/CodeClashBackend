@@ -286,7 +286,7 @@ module.exports = {
             return challengeMissingCreatorID;
         }
 
-        if (await database.collection("users").findOne({"_id": ObjectId(creatorId)}) == null) {
+        if (creatorId.length !== 24 || await database.collection("users").findOne({"_id": ObjectId(creatorId)}) == null) {
             return nonExistingUserError;
         }
 
