@@ -388,7 +388,7 @@ module.exports = {
 
 
     getAllActiveChallenges: async function (database) {
-        return await database.collection("challenges").find({dateClosed: null}).toArray();
+        return await database.collection("challenges").find().toArray();
     },
 
     // Deletes a user in the database
