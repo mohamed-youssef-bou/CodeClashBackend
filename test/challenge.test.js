@@ -163,29 +163,29 @@ describe('Query all challenges', () => {
 
     beforeEach(async () => {
       await controller.create_user(username, email, password, dbConnection.db);
-      var user = await controller.getUserByUsername(username, dbConnection.db); 
-      var creatorId = user["_id"].toString(); 
-      await controller.createChallenge(dbConnection.db, challengeName, creatorId, 
-                                       description, languages, funcSignature, 
+      var user = await controller.getUserByUsername(username, dbConnection.db);
+      var creatorId = user["_id"].toString();
+      await controller.createChallenge(dbConnection.db, challengeName, creatorId,
+                                       description, languages, funcSignature,
                                        solution, localTests, hiddenTests);
-      await controller.createChallenge(dbConnection.db, challengeName2, creatorId, 
-                                        description, languages, funcSignature, 
+      await controller.createChallenge(dbConnection.db, challengeName2, creatorId,
+                                        description, languages, funcSignature,
                                         solution, localTests, hiddenTests);
-    
+
     });
-  
+
     afterEach(async () => {
       await dbConnection.cleanup();
     });
-  
+
     afterAll(async () => {
       await dbConnection.stop();
     });
-  
+
     it('Successfully queries all challenges', async () => {
 
       var response = await controller.getAllActiveChallenges(dbConnection.db);
-      
+
       expect(response.length).toEqual(2);
       expect(response[0].challengeName).toEqual(challengeName);
       expect(response[1].challengeName).toEqual(challengeName2);
@@ -195,7 +195,7 @@ describe('Query all challenges', () => {
 
       expect(author[1].username).toEqual(username);
       expect(response[0].language).toEqual(languages);
-    
+
     });
 
     it('Alternative querying of all challenges', async () => {
@@ -206,39 +206,39 @@ describe('Query all challenges', () => {
       expect(response.length).toEqual(1);
       expect(response[0].challengeName).toEqual(challengeName);
       expect(response[0].language).toEqual(languages);
-    
+
     });
 
   });
 
-  describe('Close challenge', () => {
+describe('Close challenge', () => {
 
     beforeAll(async () => {
       await dbConnection.start();
     });
-  
+
     beforeEach(async () => {
       await controller.create_user(username, email, password, dbConnection.db);
-      var user = await controller.getUserByUsername(username, dbConnection.db); 
-      var creatorId = user["_id"].toString(); 
-      await controller.createChallenge(dbConnection.db, challengeName, creatorId, 
-                                       description, languages, funcSignature, 
+      var user = await controller.getUserByUsername(username, dbConnection.db);
+      var creatorId = user["_id"].toString();
+      await controller.createChallenge(dbConnection.db, challengeName, creatorId,
+                                       description, languages, funcSignature,
                                        solution, localTests, hiddenTests);
     });
 
     afterEach(async () => {
       await dbConnection.cleanup();
     });
-  
+
     afterAll(async () => {
       await dbConnection.stop();
     });
-  
+
     it('Successfully closes challenge', async () => {
-      var challenge = await controller.getChallengeByName(challengeName, dbConnection.db); 
+      var challenge = await controller.getChallengeByName(challengeName, dbConnection.db);
       var challengeId = challenge["_id"].toString();
-      var user = await controller.getUserByUsername(username, dbConnection.db); 
-      var creatorId = user["_id"].toString(); 
+      var user = await controller.getUserByUsername(username, dbConnection.db);
+      var creatorId = user["_id"].toString();
 
       var response = await controller.closeChallenge(dbConnection.db, creatorId, challengeName, challengeId);
       expect(response[0]).toEqual('201');
@@ -246,17 +246,64 @@ describe('Query all challenges', () => {
     });
 
     it('Failed to close challenge because challenge is already closed', async () => {
-      var challenge = await controller.getChallengeByName(challengeName, dbConnection.db); 
+      var challenge = await controller.getChallengeByName(challengeName, dbConnection.db);
       var challengeId = challenge["_id"].toString();
-      var user = await controller.getUserByUsername(username, dbConnection.db); 
-      var creatorId = user["_id"].toString(); 
+      var user = await controller.getUserByUsername(username, dbConnection.db);
+      var creatorId = user["_id"].toString();
 
       var response = await controller.closeChallenge(dbConnection.db, creatorId, challengeName, challengeId);
       var response = await controller.closeChallenge(dbConnection.db, creatorId, challengeName, challengeId);
       expect(response[0]).toEqual('400');
       expect(response[1]).toEqual('Challenge already closed!');
     });
-    
+
+});
+
+describe('Delete challenge', () => {
+
+  beforeAll(async () => {
+    await dbConnection.start();
   });
 
+  beforeEach(async () => {
+    await controller.create_user(username, email, password, dbConnection.db);
+    var user = await controller.getUserByUsername(username, dbConnection.db);
+    var creatorId = user["_id"].toString();
+    await controller.createChallenge(dbConnection.db, challengeName, creatorId,
+        description, languages, funcSignature,
+        solution, localTests, hiddenTests);
+  });
 
+  afterEach(async () => {
+    await dbConnection.cleanup();
+  });
+
+  afterAll(async () => {
+    await dbConnection.stop();
+  });
+
+  it('Successfully delete challenge', async () => {
+    var challenge = await controller.getChallengeByName(challengeName, dbConnection.db);
+    var challengeId = challenge["_id"].toString();
+    var user = await controller.getUserByUsername(username, dbConnection.db);
+    var creatorName = user["username"].toString();
+
+    var response = await controller.deleteChallenge(challengeId, challengeName, creatorName, dbConnection.db);
+    expect(response[0]).toEqual(200);
+    expect(response[1]).toEqual('Successfully deleted challenge.');
+  });
+
+  it("Failed to delete challenge that was already deleted", async () => {
+    var challenge = await controller.getChallengeByName(challengeName, dbConnection.db);
+    var challengeId = challenge["_id"].toString();
+    var user = await controller.getUserByUsername(username, dbConnection.db);
+    var creatorName = user["username"].toString();
+
+    await controller.deleteChallenge(challengeId, challengeName, creatorName, dbConnection.db);
+    var response = await controller.deleteChallenge(challengeId, challengeName, creatorName, dbConnection.db);
+    console.log(response);
+    expect(response[0]).toEqual("404");
+    expect(response[1]).toEqual('Challenge doesn\'t exist.');
+  });
+
+});
