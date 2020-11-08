@@ -293,17 +293,18 @@ describe('Delete challenge', () => {
     expect(response[1]).toEqual('Successfully deleted challenge.');
   });
 
-  it("Failed to delete challenge that was already deleted", async () => {
+  it("Failed to delete challenge that isn't yours", async () => {
+    var testUsername = "testUser";
+    await controller.create_user(testUsername, "test@gmail.com", "password", dbConnection.db);
     var challenge = await controller.getChallengeByName(challengeName, dbConnection.db);
     var challengeId = challenge["_id"].toString();
-    var user = await controller.getUserByUsername(username, dbConnection.db);
+    var user = await controller.getUserByUsername(testUsername, dbConnection.db);
     var creatorName = user["username"].toString();
 
     await controller.deleteChallenge(challengeId, challengeName, creatorName, dbConnection.db);
     var response = await controller.deleteChallenge(challengeId, challengeName, creatorName, dbConnection.db);
-    console.log(response);
-    expect(response[0]).toEqual("404");
-    expect(response[1]).toEqual('Challenge doesn\'t exist.');
+    expect(response[0]).toEqual("400");
+    expect(response[1]).toEqual('Incorrect author.');
   });
 
 });
