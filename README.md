@@ -159,3 +159,18 @@ Following what was written in the Gherkin Feature file:
 | 400, "Missing author parameter." |
 
 ------------------------------------------------------------
+
+### POST `/submitChallenge`
+| Usage  | Parameters | Returns |
+| ------------- | ------------- | ------------- |
+| Delete a challenge  | **body**: challengeId, submissionCode, writerId | 200, "Successfully submitted challenge" 
+
+
+Following what was written in the Gherkin Feature file:
+
+| Errors  |
+| ------------- |
+| 500, "Internal Server Error" |
+INCOMPLETE
+
+------------------------------------------------------------
