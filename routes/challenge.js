@@ -73,4 +73,14 @@ router.get("/challenges/:id", async function (req, res) {
     return res.status(200).send(response);
 });
 
+router.post("/submitChallenge", async function (req, res) {
+    // Get values from request
+    var challengeId = req.body["challengeId"];
+    var submissionCode = req.body["submissionCode"];
+    var writerId = req.body["writerId"];
+
+    var response = await create_connection.submitChallenge(challengeId, submissionCode, writerId);
+    return res.send(response); //res.status(parseInt(response[0])).send(response[1]);
+});
+
 module.exports = router;

@@ -89,6 +89,16 @@ module.exports = {
         connection.close();
 
         return response;
-    }
+    },
+    submitChallenge: async function(challengeId, submissionCode, writerId){
+        var connection = await MongoClient.connect(credentials.getMongoUri(), { useUnifiedTopology: true }).catch((error) => console.log(error));
+        var database = connection.db(databaseName);
+
+        var response = await controller.submitChallenge(challengeId, submissionCode, writerId, database);
+        connection.close();
+
+        return response;
+    },
+
 
 }
