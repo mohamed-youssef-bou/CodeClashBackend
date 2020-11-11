@@ -36,8 +36,8 @@ describe('Create user', () => {
     expect(response.username).toEqual(username_1);
     expect(response.email).toEqual(email_1);
     expect(response.score).toEqual(0);
-    expect(response.challengesCreated).toEqual('');
-    expect(response.submissions).toEqual('');
+    expect(response.challengesCreated).toEqual([]);
+    expect(response.submissions).toEqual([]);
 
   });
 });
@@ -276,8 +276,8 @@ describe('Query user info', () => {
     expect(response.username).toEqual(username_1);
     expect(response.email).toEqual(email_1);
     expect(response.score).toEqual(0);
-    expect(response.challengesCreated).toEqual('');
-    expect(response.submissions).toEqual('');
+    expect(response.challengesCreated).toEqual([]);
+    expect(response.submissions).toEqual([]);
   });
 
 });

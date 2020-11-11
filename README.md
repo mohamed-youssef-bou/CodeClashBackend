@@ -100,7 +100,7 @@ Following what was written in the Gherkin Feature file:
 ### POST `/createChallenge`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
-| Create a new challenge  | **parameters**: challengeName, creatorId, description, language, funcSignature, localTests, hiddenTests | 201, "Successfully created the challenge" 
+| Create a new challenge  | **parameters**: name, id, description, language, funcSignature, localTests (string + array format), hiddenTests (string + array format), solution | 201, "Successfully created the challenge" 
 
 
 Following what was written in the Gherkin Feature file:
@@ -157,5 +157,20 @@ Following what was written in the Gherkin Feature file:
 | 400, "Challenge does not exist." |
 | 400, "Challenge name is empty." |
 | 400, "Missing author parameter." |
+
+------------------------------------------------------------
+
+### POST `/submitChallenge`
+| Usage  | Parameters | Returns |
+| ------------- | ------------- | ------------- |
+| Delete a challenge  | **body**: challengeId, submissionCode, writerId | 200, "Successfully submitted challenge" 
+
+
+Following what was written in the Gherkin Feature file:
+
+| Errors  |
+| ------------- |
+| 500, "Internal Server Error" |
+INCOMPLETE
 
 ------------------------------------------------------------

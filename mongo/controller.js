@@ -132,8 +132,8 @@ module.exports = {
                 "email": email,
                 "password": await bcrypt.hash(password, 10),
                 "score": 0,
-                "challengesCreated": "",
-                "submissions": ""
+                "challengesCreated": [],
+                "submissions": []
             });
 
         } catch (e) {
@@ -336,6 +336,23 @@ module.exports = {
                 "dateClosed": null,
             });
 
+            var user = await database.collection("users").findOne({_id: ObjectId(creatorId)});
+
+            var challengeId = response.ops[0]._id;
+            var newChallengeList = user.challengesCreated;
+
+            newChallengeList.push(challengeId);
+            
+            // Save challenge to the author's list
+            await database.collection("users").updateOne(
+                {"_id": ObjectId(creatorId)},
+                {
+                    $set: {
+                        "challengesCreated": newChallengeList
+                    }
+                }
+            )
+
             return ["201", "Successfully created the challenge"]
 
         } catch (e) {
@@ -396,7 +413,7 @@ module.exports = {
 
         // Checking if account exists
         var challenge = await database.collection("challenges").findOne({_id: ObjectId(challengeId), challengeName: challengeTitle});
-        
+        console.log(challenge);
         if(challenge == null) {
             return nonExistingChallenge;
         }
@@ -421,4 +438,47 @@ module.exports = {
 
         return [200, 'Successfully deleted challenge.'];
     },
+
+    submitChallenge: async function (challengeId, submissionCode, writerId, database){
+
+        // Get challenge from db
+        var challenge = await database.collection("challenges").findOne({_id: ObjectId(challengeId)});
+
+        if(challenge == null){
+            return nonExistingChallenge;
+        }
+
+        var user = await database.collection("users").findOne({_id: ObjectId(writerId)});
+
+        if(user == null){
+            return nonExistingUserError;
+        }
+
+        var result = 5; //TODO: compileChallenge(submissionCode, challenge);
+
+        const response = await database.collection("submission").insertOne({
+            "challengeId": challenge._id,
+            "writerId": writerId,
+            "score": result,
+            "submissionCode": submissionCode,
+            "completionTime": new Date(),
+        });
+
+        var submissionId = response.ops[0]._id;
+        var newSubmissionList = user.submissions;
+
+        newSubmissionList.push(submissionId);
+        
+        // Save submissionId in user list
+        await database.collection("users").updateOne(
+            {"_id": ObjectId(writerId)},
+            {
+                $set: {
+                    "submissions": newSubmissionList
+                }
+            }
+        )
+
+        return ["200", result]
+    }
 }
