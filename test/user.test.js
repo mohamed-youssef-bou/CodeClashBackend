@@ -367,7 +367,7 @@ describe('Leaderboard', () => {
     await dbConnection.stop();
   });
 
-  it('Get populated leaderboard', async () => {
+  it('Get populated leaderboard successfully', async () => {
     const database = dbConnection.db;
     for (let user of users) {
       await controller.create_user(user[0], user[1], user[2], dbConnection.db);
