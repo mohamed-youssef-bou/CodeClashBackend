@@ -109,7 +109,7 @@ describe('Delete user', () => {
   });
 
   it('Successfully deleting user', async () => {
-    user = await controller.getUserByUsername(username_1, dbConnection.db); 
+    user = await controller.getUserByUsername(username_1, dbConnection.db);
     response = await controller.delete_user(user["_id"], password, dbConnection.db);
 
     expect(response[0]).toEqual('201');
@@ -142,7 +142,7 @@ describe('Delete user', () => {
   });
 
   it('Fails to delete user due to non-existing user.', async () => {
-    user = await controller.getUserByUsername(username_1, dbConnection.db); 
+    user = await controller.getUserByUsername(username_1, dbConnection.db);
     response = await controller.delete_user("incorrectId", password, dbConnection.db);
 
     expect(response[0]).toEqual('404');
@@ -150,7 +150,7 @@ describe('Delete user', () => {
   });
 
   it('Fails to delete user due to incorrect password.', async () => {
-    user = await controller.getUserByUsername(username_1, dbConnection.db); 
+    user = await controller.getUserByUsername(username_1, dbConnection.db);
     response = await controller.delete_user(user["_id"], "incorrectPass", dbConnection.db);
 
     expect(response[0]).toEqual('401');
@@ -181,9 +181,9 @@ describe('Update user', () => {
   });
 
   it('Successfully updating user', async () => {
-    user = await controller.getUserByUsername(username_1, dbConnection.db); 
+    user = await controller.getUserByUsername(username_1, dbConnection.db);
     response = await controller.update_user(user["_id"], "newUsername", "newPassword", dbConnection.db);
-    
+
     expect(response[0]).toEqual('201');
     expect(response[1]).toEqual('Successfully updated user.');
 
@@ -192,7 +192,7 @@ describe('Update user', () => {
 
     expect(response.username).toEqual("newUsername");
     var pass_check =  bcrypt.compareSync("newPassword", response.password)
-    expect(pass_check).toEqual(true); 
+    expect(pass_check).toEqual(true);
   });
 
 });
@@ -219,8 +219,8 @@ describe('Update user', () => {
   });
 
   it('Fails to update user due to non-unique username.', async () => {
-    user = await controller.getUserByUsername(username_1, dbConnection.db); 
-    
+    user = await controller.getUserByUsername(username_1, dbConnection.db);
+
     response = await controller.update_user(user["_id"], username_2, password, dbConnection.db);
     expect(response[0]).toEqual('400');
     expect(response[1]).toEqual('Username is not unique.');
@@ -230,13 +230,13 @@ describe('Update user', () => {
 
     expect(response.username).toEqual(username_1);
     var pass_check =  bcrypt.compareSync(password, response.password)
-    expect(pass_check).toEqual(true); 
+    expect(pass_check).toEqual(true);
   });
 
   it('Fails to update user due to invalid password format.', async () => {
-    user = await controller.getUserByUsername(username_1, dbConnection.db); 
+    user = await controller.getUserByUsername(username_1, dbConnection.db);
     response = await controller.update_user(user["_id"], username_1, " ", dbConnection.db);
-    
+
     expect(response[0]).toEqual('400');
     expect(response[1]).toEqual('Password format not valid.');
 
@@ -245,7 +245,7 @@ describe('Update user', () => {
 
     expect(response.username).toEqual(username_1);
     var pass_check =  bcrypt.compareSync(password, response.password)
-    expect(pass_check).toEqual(true); 
+    expect(pass_check).toEqual(true);
   });
 
 });
@@ -310,7 +310,6 @@ describe('User login', () => {
   });
 });
 
-
 describe('User login', () => {
 
   beforeAll(async () => {
@@ -346,4 +345,53 @@ describe('User login', () => {
     expect(response[0].username).toEqual(username_1);
 
   });
+});
+
+describe('Leaderboard', () => {
+  let users = [
+    ["Boss", "boss@tester.com", password, 25],
+    ["Chief", "chief@tester.com", password, 100],
+    ["Null", "null@tester.com", password, 0],
+    ["Baws", "baws@tester.com", password, 25],
+  ];
+
+  beforeAll(async () => {
+    await dbConnection.start();
+  });
+
+  afterEach(async () => {
+    await dbConnection.cleanup();
+  });
+
+  afterAll(async () => {
+    await dbConnection.stop();
+  });
+
+  it('Get populated leaderboard', async () => {
+    const database = dbConnection.db;
+    for (let user of users) {
+      await controller.create_user(user[0], user[1], user[2], dbConnection.db);
+      await database.collection("users").updateOne(
+          {"username": user[0]},
+          {
+            $set: {
+              "score": user[3]
+            },
+            $currentDate: {lastModified: true}
+          }
+      );
+    }
+
+    const expectedLeaderboard = [
+      {username: 'Chief', score: 100},
+      {username: 'Baws', score: 25},
+      {username: 'Boss', score: 25},
+      {username: 'Null', score: 0}
+    ];
+
+    const returnedLeaderboard = await controller.getLeaderboard(dbConnection.db);
+
+    expect(JSON.stringify(returnedLeaderboard)).toEqual(JSON.stringify(expectedLeaderboard));
+  });
+
 });
