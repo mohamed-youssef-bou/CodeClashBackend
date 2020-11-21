@@ -54,6 +54,15 @@ module.exports = {
 
         return response;
     },
+    getLeaderboard: async function () {
+        var connection = await MongoClient.connect(credentials.getMongoUri(), { useUnifiedTopology: true }).catch((error) => console.log(error));
+        var database = connection.db(databaseName);
+
+        var response = await controller.getLeaderboard(database);
+        connection.close();
+
+        return response;
+    },
     createChallenge: async function(challengeName, creatorId, description, language, funcSignature, solution, localTests, hiddenTests){
         var connection = await MongoClient.connect(credentials.getMongoUri(), { useUnifiedTopology: true }).catch((error) => console.log(error));
         var database = connection.db(databaseName);

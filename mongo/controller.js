@@ -263,6 +263,27 @@ module.exports = {
 
     },
 
+    // Gets list of users ordered by their score (leaderboard)
+    getLeaderboard: async function (database) {
+        const Comparator = (a, b) => {
+            //compare scores first
+            if (a["score"] > b["score"]) return -1;
+            if (a["score"] < b["score"]) return 1;
+            //if scores are the same, sort usernames alphabetically
+            if (a["username"] < b["username"]) return -1;
+            if (a["username"] > b["username"]) return 1;
+            return 0;
+        }
+
+        const options = {
+            // Include only the `username` and `score` fields in each returned document
+            projection: {_id: 0, username: 1, score: 1},
+        };
+        let activeUsers = await database.collection("users").find({}, options).toArray();
+
+        return activeUsers.sort(Comparator);
+    },
+
     // Checks if challenge name already taken
     challengeNameExists: async function (database, challengeName) {
         const exists = await database.collection("challenges").findOne({
