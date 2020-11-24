@@ -512,47 +512,49 @@ module.exports = {
         var hiddenTestCount = 0;
         var score = 0;
 
+        // NEED TO REFACTOR BELOW CODE TO LOOP THROUGH THE ARRAY VERSIONS OF LOCAL AND HIDDEN TESTS!
+
         // Looping through all the local tests 
-        for (let [key, value] of Object.entries(challenge.localTests)) { 
+        // for (let [key, value] of Object.entries(challenge.localTests)) { 
 
-            // Running the submission code
-            let resultPromise = await runSource(submissionCode, {stdin: value.input});
+        //     // Running the submission code
+        //     let resultPromise = await runSource(submissionCode, {stdin: value.input});
 
-            // If the standard out matches the expected challenge output, add one to the score
-            if (parseInt(resultPromise.stdout) == parseInt(value.output)) {
-                score += 1;
-            }
+        //     // If the standard out matches the expected challenge output, add one to the score
+        //     if (parseInt(resultPromise.stdout) == parseInt(value.output)) {
+        //         score += 1;
+        //     }
             
-            // This means there is some standard error
-            if (resultPromise.stderr.length != 0) {
-                stderr += "Stderr: Local Test " + localTestCount + ": " + resultPromise.stderr + "\n";
-            }
+        //     // This means there is some standard error
+        //     if (resultPromise.stderr.length != 0) {
+        //         stderr += "Stderr: Local Test " + localTestCount + ": " + resultPromise.stderr + "\n";
+        //     }
 
-            stdout += "Stdout: Local Test " + localTestCount + ": " + resultPromise.stdout + "\n";
-            localTestCount += 1;
-        }
+        //     stdout += "Stdout: Local Test " + localTestCount + ": " + resultPromise.stdout + "\n";
+        //     localTestCount += 1;
+        // }
 
-        count = 1;
+        // count = 1;
 
-        // Doing same as above, but for hidden tests
-        for (let [key, value] of Object.entries(challenge.hiddenTests)) { 
+        // // Doing same as above, but for hidden tests
+        // for (let [key, value] of Object.entries(challenge.hiddenTests)) { 
 
-            // Running the submission code
-            let resultPromise = await runSource(submissionCode, {stdin: value.input});
+        //     // Running the submission code
+        //     let resultPromise = await runSource(submissionCode, {stdin: value.input});
 
-            // If the standard out matches the expected challenge output, add one to the score
-            if (parseInt(resultPromise.stdout) == parseInt(value.output)) {
-                score += 1;
-            }
+        //     // If the standard out matches the expected challenge output, add one to the score
+        //     if (parseInt(resultPromise.stdout) == parseInt(value.output)) {
+        //         score += 1;
+        //     }
             
-            // This means there is some standard error
-            if (resultPromise.stderr.length != 0) {
-                stderr += "Stderr: Hidden Test " + hiddenTestCount + ": " + resultPromise.stderr + "\n";
-            }
+        //     // This means there is some standard error
+        //     if (resultPromise.stderr.length != 0) {
+        //         stderr += "Stderr: Hidden Test " + hiddenTestCount + ": " + resultPromise.stderr + "\n";
+        //     }
 
-            stdout += "Stdout: Hidden Test " + hiddenTestCount + ": " + resultPromise.stdout + "\n";
-            count += 1;
-        }
+        //     stdout += "Stdout: Hidden Test " + hiddenTestCount + ": " + resultPromise.stdout + "\n";
+        //     count += 1;
+        // }
 
         return [score/(hiddenTestCount+localTestCount), stdout, stderr];
     }
