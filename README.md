@@ -122,6 +122,22 @@ Following what was written in the Gherkin Feature file:
 | 400, "Provided hidden tests are not valid" |
 
 ------------------------------------------------------------
+### POST `/challenge`
+| Usage  | Parameters | Returns |
+| ------------- | ------------- | ------------- |
+| Get attributes of challenge  | **parameters**: challengeName | 200, \[challengeName, creatorUsername, description, language, function signature, local tests in JSON, challenge ID \];
+
+Note that this is a POST and not a GET because `router.get()` kept on inexplicably giving errors 
+
+| Errors  |
+| ------------- |
+| 500, "Internal Server Error" |
+| 400, "Missing challenge name parameter" |
+| 400, "Challenge does not exist" |
+| 400, "Challenge can no longer be solved" |
+|"404", "User with this id does not exist."|
+
+------------------------------------------------------------
 ### POST `/closeChallenge`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
