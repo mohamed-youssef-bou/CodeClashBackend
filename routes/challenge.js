@@ -67,15 +67,15 @@ router.post("/deleteChallenge", async function (req, res) {
 
 });
 
-router.post("/challenge", async function (req, res) {
-    let challengeName = req.body["challengeName"];
+/* GET challenges listing. */
+router.get("/challenge/:challengeName", async function (req, res) {
+    let challengeName = req.params.challengeName;
 
     const response = await create_connection.getChallengeAttributes(challengeName);
 
     return res.status(parseInt(response[0])).send(response[1]);
 });
 
-/* GET challenges listing. */
 router.get("/challenges/:id", async function (req, res) {
     let response = await create_connection.getAllActiveChallenges();
     return res.status(200).send(response);

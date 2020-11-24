@@ -122,12 +122,10 @@ Following what was written in the Gherkin Feature file:
 | 400, "Provided hidden tests are not valid" |
 
 ------------------------------------------------------------
-### POST `/challenge`
+### GET `/challenge/:challengeName`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
-| Get attributes of challenge  | **parameters**: challengeName | 200, \[challengeName, creatorUsername, description, language, function signature, local tests in JSON, challenge ID \];
-
-Note that this is a POST and not a GET because `router.get()` kept on inexplicably giving errors 
+| Get attributes of challenge  | **parameters**: challengeName written directly in the URL after the slash | 200, \[challenge name, creator username, description, language, function signature, local tests in JSON format, challenge ID \];
 
 | Errors  |
 | ------------- |
