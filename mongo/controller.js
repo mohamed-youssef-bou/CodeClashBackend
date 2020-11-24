@@ -1,6 +1,7 @@
 const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
 const validator = require("validator");
+const {node} = require('compile-run');
 
 const creationSuccess = ["201", "Successfully created user."];
 const deletionSuccess = ["201", "Successfully deleted user."];
@@ -475,12 +476,12 @@ module.exports = {
             return nonExistingUserError;
         }
 
-        var result = 5; //TODO: compileChallenge(submissionCode, challenge);
+        var result = await this.compileAndTestChallenge(submissionCode, challenge);
 
         const response = await database.collection("submission").insertOne({
             "challengeId": challenge._id,
             "writerId": writerId,
-            "score": result,
+            "score": result[0],
             "submissionCode": submissionCode,
             "completionTime": new Date(),
         });
@@ -501,5 +502,58 @@ module.exports = {
         )
 
         return ["200", result]
+    },
+
+    compileAndTestChallenge: async function (submissionCode, challenge){
+
+        var stdout = "";
+        var stderr = "";
+        var localTestCount = 0;
+        var hiddenTestCount = 0;
+        var score = 0;
+
+        // Looping through all the local tests 
+        for (let [key, value] of Object.entries(challenge.localTests)) { 
+
+            // Running the submission code
+            let resultPromise = await runSource(submissionCode, {stdin: value.input});
+
+            // If the standard out matches the expected challenge output, add one to the score
+            if (parseInt(resultPromise.stdout) == parseInt(value.output)) {
+                score += 1;
+            }
+            
+            // This means there is some standard error
+            if (resultPromise.stderr.length != 0) {
+                stderr += "Stderr: Local Test " + localTestCount + ": " + resultPromise.stderr + "\n";
+            }
+
+            stdout += "Stdout: Local Test " + localTestCount + ": " + resultPromise.stdout + "\n";
+            localTestCount += 1;
+        }
+
+        count = 1;
+
+        // Doing same as above, but for hidden tests
+        for (let [key, value] of Object.entries(challenge.hiddenTests)) { 
+
+            // Running the submission code
+            let resultPromise = await runSource(submissionCode, {stdin: value.input});
+
+            // If the standard out matches the expected challenge output, add one to the score
+            if (parseInt(resultPromise.stdout) == parseInt(value.output)) {
+                score += 1;
+            }
+            
+            // This means there is some standard error
+            if (resultPromise.stderr.length != 0) {
+                stderr += "Stderr: Hidden Test " + hiddenTestCount + ": " + resultPromise.stderr + "\n";
+            }
+
+            stdout += "Stdout: Hidden Test " + hiddenTestCount + ": " + resultPromise.stdout + "\n";
+            count += 1;
+        }
+
+        return [score/(hiddenTestCount+localTestCount), stdout, stderr];
     }
 }
