@@ -72,6 +72,15 @@ module.exports = {
 
         return response;
     },
+    getChallengeAttributes: async function (challengeName) {
+        var connection = await MongoClient.connect(credentials.getMongoUri(), { useUnifiedTopology: true }).catch((error) => console.log(error));
+        var database = connection.db(databaseName);
+
+        var response = await controller.getChallengeAttributes(database, challengeName);
+        connection.close();
+
+        return response;
+    },
     closeChallenge: async function(creatorId, challengeName, challengeId){
         var connection = await MongoClient.connect(credentials.getMongoUri(), { useUnifiedTopology: true }).catch((error) => console.log(error));
         var database = connection.db(databaseName);

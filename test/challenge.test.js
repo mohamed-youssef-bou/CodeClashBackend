@@ -155,6 +155,80 @@ describe('Create Challenge', () => {
 
 });
 
+describe('Get challenge attributes', () => {
+
+    let creatorId;
+
+    beforeAll(async () => {
+        await dbConnection.start();
+        await controller.create_user(username, email, password, dbConnection.db);
+        let user = await controller.getUserByUsername(username, dbConnection.db);
+        creatorId = user["_id"].toString();
+    });
+
+    afterEach(async () => {
+        await dbConnection.cleanup();
+    });
+
+    afterAll(async () => {
+        await dbConnection.stop();
+    });
+
+    it('Missing challenge name', async () => {
+        const database = dbConnection.db;
+        //create challenge before checking that attributes query will fail
+        await controller.createChallenge(database, challengeName, creatorId,
+            description, languages, funcSignature,
+            solution, localTests, hiddenTests);
+
+        let response = await controller.getChallengeAttributes(database, null);
+
+        expect(response.length).toEqual(2);
+        expect(parseInt(response[0])).toEqual(400);
+        expect(response[1]).toEqual("Missing challenge name parameter");
+    });
+
+    it('Challenge does not exit', async () => {
+        const database = dbConnection.db;
+        let response = await controller.getChallengeAttributes(database, "IdoNotExist#2020");
+        expect(response.length).toEqual(2);
+        expect(parseInt(response[0])).toEqual(400);
+        expect(response[1]).toEqual("Challenge does not exist");
+    });
+
+    it('Challenge is closed', async () => {
+        const database = dbConnection.db;
+        //create challenge and close it before checking that attributes query will fail
+        await controller.createChallenge(database, challengeName, creatorId,
+            description, languages, funcSignature,
+            solution, localTests, hiddenTests);
+
+        let challenge = await controller.getChallengeByName(challengeName, database);
+
+        await controller.closeChallenge(database, creatorId, challengeName, challenge["_id"]);
+
+        let response = await controller.getChallengeAttributes(database, challengeName);
+        expect(response.length).toEqual(2);
+        expect(parseInt(response[0])).toEqual(400);
+        expect(response[1]).toEqual("Challenge can no longer be solved");
+    });
+
+    it('Successfully returns challenge attributes', async () => {
+        const database = dbConnection.db;
+        await controller.createChallenge(database, challengeName, creatorId,
+            description, languages, funcSignature,
+            solution, localTests, hiddenTests);
+
+        let expectedChallenge = await controller.getChallengeByName(challengeName, database);
+        let expectedAttributes = [challengeName, username, description, languages, funcSignature, JSON.parse(localTests), expectedChallenge._id];
+
+        let [code, returnedAttributes] = await controller.getChallengeAttributes(database, challengeName);
+        expect(parseInt(code)).toEqual(200);
+        expect(returnedAttributes).toEqual(expectedAttributes);
+
+    });
+});
+
 describe('Query all challenges', () => {
 
     beforeAll(async () => {
