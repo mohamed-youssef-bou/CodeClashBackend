@@ -12,7 +12,6 @@ var usersRouter = require('./routes/users');
 var challengeRouter = require('./routes/challenge');
 var testRouter = require("./routes/testFrontend");
 var secureRouter = require("./routes/secure-routes")
-var submissionRouter = require("./routes/submission")
 
 var app = express();
 
@@ -33,7 +32,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/', usersRouter);
 app.use('/', challengeRouter);
-app.use('/', submissionRouter);
 app.use("/test", testRouter);
 
 // Plug in the JWT strategy as a middleware so only verified users can access this route.
