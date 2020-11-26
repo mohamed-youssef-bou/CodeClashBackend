@@ -122,6 +122,20 @@ Following what was written in the Gherkin Feature file:
 | 400, "Provided hidden tests are not valid" |
 
 ------------------------------------------------------------
+### GET `/challenge/:challengeName`
+| Usage  | Parameters | Returns |
+| ------------- | ------------- | ------------- |
+| Get attributes of challenge  | **parameters**: challengeName written directly in the URL after the slash | 200, \[challenge name, creator username, description, language, function signature, local tests in JSON format, challenge ID \];
+
+| Errors  |
+| ------------- |
+| 500, "Internal Server Error" |
+| 400, "Missing challenge name parameter" |
+| 400, "Challenge does not exist" |
+| 400, "Challenge can no longer be solved" |
+|"404", "User with this id does not exist."|
+
+------------------------------------------------------------
 ### POST `/closeChallenge`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
@@ -172,5 +186,18 @@ Following what was written in the Gherkin Feature file:
 | ------------- |
 | 500, "Internal Server Error" |
 INCOMPLETE
+
+------------------------------------------------------------
+
+### GET `/leaderboard/:id`
+| Usage  | Parameters | Returns |
+| ------------- | ------------- | ------------- |
+| Retrieves an array of usernames and score from the database. Note that ID is required to function properly.  | none | 200, users: JSON Array
+
+| Errors  |
+| ------------- |
+| 500, "Internal Server Error" |
+| 404, "User with this id does not exist" |
+
 
 ------------------------------------------------------------

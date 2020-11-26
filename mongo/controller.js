@@ -31,6 +31,7 @@ const challengeMissingHiddenTests = ["400", "Missing hidden test cases parameter
 const challengeInvalidHiddenTests = ["400", "Provided hidden tests are not valid"];
 const challengeDoesNotExist = ["400", "Challenge does not exist"];
 const challengeAlreadyClosed = ["400", "Challenge already closed!"];
+const challengeCannotAttempt = ["400", "Challenge can no longer be solved"];
 const challengeCloserIdMatchError = ["400", "Closer ID does not match creator ID."];
 const challengeIncorrectAuthor = ["400", "Incorrect author."];
 const nonExistingChallenge = ["404", "Challenge doesn't exist."];
@@ -387,6 +388,38 @@ module.exports = {
         }
     },
 
+    // Queries challenge attributes
+    getChallengeAttributes: async function (database, challengeName) {
+        if (challengeName === null || challengeName.trim() === "") {
+            return challengeMissingName;
+        }
+
+        const requestedChallenge = await database.collection("challenges").findOne({
+            challengeName: {$eq: challengeName}
+        })
+
+        if (requestedChallenge == null) {
+            return challengeDoesNotExist;
+        }
+
+        if (requestedChallenge.dateClosed != null) {
+            return challengeCannotAttempt;
+        }
+
+        let author;
+        let authorFound = await this.getUserById(requestedChallenge.creatorId, database);
+        if (parseInt(authorFound[0]) !== 200) {
+            return authorFound;
+        } else {
+            author = authorFound[1];
+        }
+
+        let attributes = [challengeName, author.username, requestedChallenge.description, requestedChallenge.language,
+            requestedChallenge.functionSignature, requestedChallenge.localTests, requestedChallenge._id];
+
+        return ["200", attributes];
+    },
+
     // Closes a challenge
     closeChallenge: async function (database, creatorId, challengeName, challengeId) {
         // Error check 
@@ -439,7 +472,6 @@ module.exports = {
 
         // Checking if account exists
         var challenge = await database.collection("challenges").findOne({_id: ObjectId(challengeId), challengeName: challengeTitle});
-        console.log(challenge);
         if(challenge == null) {
             return nonExistingChallenge;
         }

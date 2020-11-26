@@ -78,4 +78,9 @@ router.put("/updateUser", async function (req, res) {
   return res.status(response[0]).send(response[1]);
 });
 
+router.get("/leaderboard/:id", async function (req, res) {
+  var response = await create_connection.getLeaderboard();
+  return res.status(200).send(response);
+});
+
 module.exports = router;
