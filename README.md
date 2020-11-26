@@ -188,3 +188,16 @@ Following what was written in the Gherkin Feature file:
 INCOMPLETE
 
 ------------------------------------------------------------
+
+### GET `/leaderboard/:id`
+| Usage  | Parameters | Returns |
+| ------------- | ------------- | ------------- |
+| Retrieves an array of usernames and score from the database. Note that ID is required to function properly.  | none | 200, users: JSON Array
+
+| Errors  |
+| ------------- |
+| 500, "Internal Server Error" |
+| 404, "User with this id does not exist" |
+
+
+------------------------------------------------------------
