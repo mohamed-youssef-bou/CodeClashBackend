@@ -482,6 +482,7 @@ module.exports = {
             "challengeId": challenge._id,
             "writerId": writerId,
             "score": result[0],
+            // "score": result,
             "submissionCode": submissionCode,
             "completionTime": new Date(),
         });
@@ -508,54 +509,27 @@ module.exports = {
 
         var stdout = "";
         var stderr = "";
-        var localTestCount = 0;
-        var hiddenTestCount = 0;
         var score = 0;
+        var allInputs = challenge.localTests.input.concat(challenge.hiddenTests.input);
+        var allOutputs = challenge.hiddenTests.output.concat(challenge.hiddenTests.output);
+        
+        // Looping through all the tests 
+        for (var i = 0; i<allInputs.length;i++) {
+            let resultPromise = await runSource(submissionCode, {stdin: allInputs[i]});
 
-        // NEED TO REFACTOR BELOW CODE TO LOOP THROUGH THE ARRAY VERSIONS OF LOCAL AND HIDDEN TESTS!
+            // If the standard out matches the expected challenge output, add one to the score
+            if (resultPromise.stdout == allOutputs[i]) {
+                score += 1;
+            }
 
-        // Looping through all the local tests 
-        // for (let [key, value] of Object.entries(challenge.localTests)) { 
+            // This means there is some standard error
+            if (resultPromise.stderr.length != 0) {
+                stderr += "Stderr: Local Test " + i + ": " + resultPromise.stderr + "\n";
+            }
 
-        //     // Running the submission code
-        //     let resultPromise = await runSource(submissionCode, {stdin: value.input});
+            stdout += "Stdout: Local Test " + i + ": " + resultPromise.stdout + "\n";
 
-        //     // If the standard out matches the expected challenge output, add one to the score
-        //     if (parseInt(resultPromise.stdout) == parseInt(value.output)) {
-        //         score += 1;
-        //     }
-            
-        //     // This means there is some standard error
-        //     if (resultPromise.stderr.length != 0) {
-        //         stderr += "Stderr: Local Test " + localTestCount + ": " + resultPromise.stderr + "\n";
-        //     }
-
-        //     stdout += "Stdout: Local Test " + localTestCount + ": " + resultPromise.stdout + "\n";
-        //     localTestCount += 1;
-        // }
-
-        // count = 1;
-
-        // // Doing same as above, but for hidden tests
-        // for (let [key, value] of Object.entries(challenge.hiddenTests)) { 
-
-        //     // Running the submission code
-        //     let resultPromise = await runSource(submissionCode, {stdin: value.input});
-
-        //     // If the standard out matches the expected challenge output, add one to the score
-        //     if (parseInt(resultPromise.stdout) == parseInt(value.output)) {
-        //         score += 1;
-        //     }
-            
-        //     // This means there is some standard error
-        //     if (resultPromise.stderr.length != 0) {
-        //         stderr += "Stderr: Hidden Test " + hiddenTestCount + ": " + resultPromise.stderr + "\n";
-        //     }
-
-        //     stdout += "Stdout: Hidden Test " + hiddenTestCount + ": " + resultPromise.stdout + "\n";
-        //     count += 1;
-        // }
-
-        return [score/(hiddenTestCount+localTestCount), stdout, stderr];
+        }
+        return [score/allOutputs.length, stdout, stderr];
     }
 }
