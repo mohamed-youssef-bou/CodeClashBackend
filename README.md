@@ -163,7 +163,7 @@ Following what was written in the Gherkin Feature file:
 ### POST `/submitChallenge`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
-| Delete a challenge  | **body**: challengeId, submissionCode, writerId | 200, "Successfully submitted challenge" 
+| Submitting a challenge  | **body**: challengeId, submissionCode, writerId | 200, "Successfully submitted challenge" 
 
 
 Following what was written in the Gherkin Feature file:

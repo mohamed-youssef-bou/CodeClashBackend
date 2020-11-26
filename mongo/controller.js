@@ -2,6 +2,9 @@ const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
 const validator = require("validator");
 const {node} = require('compile-run');
+const { execFile } = require('child_process');
+const fs = require('fs');
+const util = require('util');
 
 const creationSuccess = ["201", "Successfully created user."];
 const deletionSuccess = ["201", "Successfully deleted user."];
@@ -31,6 +34,7 @@ const challengeAlreadyClosed = ["400", "Challenge already closed!"];
 const challengeCloserIdMatchError = ["400", "Closer ID does not match creator ID."];
 const challengeIncorrectAuthor = ["400", "Incorrect author."];
 const nonExistingChallenge = ["404", "Challenge doesn't exist."];
+const testingError = ["404", "Testing error"];
 
 // Required for linking javascript files
 module.exports = {
@@ -478,6 +482,10 @@ module.exports = {
 
         var result = await this.compileAndTestChallenge(submissionCode, challenge);
 
+        if (result == "404") {
+            return testingError;
+        }
+
         const response = await database.collection("submission").insertOne({
             "challengeId": challenge._id,
             "writerId": writerId,
@@ -505,31 +513,71 @@ module.exports = {
         return ["200", result]
     },
 
+    createFile: async function (filePath, submissionCode){
+
+        new Promise ((resolve, reject) => {
+            fs.appendFile(filePath, submissionCode, function (err) {
+                if (err) throw err;
+                console.log('Saved!');
+            });
+        }); 
+    },
+
+    // createFile: async function (filePath, submissionCode){
+    //     fs.appendFile(filePath, submissionCode, function (err) {
+    //         if (err) throw err;
+    //         console.log('Saved!');
+    //     });
+    // },
+
     compileAndTestChallenge: async function (submissionCode, challenge){
 
         var stdout = "";
         var stderr = "";
         var score = 0;
         var allInputs = challenge.localTests.input.concat(challenge.hiddenTests.input);
-        var allOutputs = challenge.hiddenTests.output.concat(challenge.hiddenTests.output);
+        var allOutputs = challenge.localTests.output.concat(challenge.hiddenTests.output);
+        // console.log(allInputs);
+        // console.log(allOutputs);
+        
+        let filePath =""+ process.cwd()+"/codeClash.js";
+        await this.createFile(filePath, submissionCode);
+        console.log("This should be after the 'Saved!'");
         
         // Looping through all the tests 
-        for (var i = 0; i<allInputs.length;i++) {
-            let resultPromise = await runSource(submissionCode, {stdin: allInputs[i]});
+        // for (var i = 0; i<allInputs.length;i++) {
+            
+        //     let input = toString(allInputs[i]);
+        //     let output = toString(allOutputs[i]);
 
-            // If the standard out matches the expected challenge output, add one to the score
-            if (resultPromise.stdout == allOutputs[i]) {
-                score += 1;
-            }
+        //     // let resultPromise = await node.runSource(submissionCode, {stdin: input});
 
-            // This means there is some standard error
-            if (resultPromise.stderr.length != 0) {
-                stderr += "Stderr: Local Test " + i + ": " + resultPromise.stderr + "\n";
-            }
+        //     const resultPromise = execFile(""+filePath+" "+input, function (error, stdout, stderr) {
+        //         if (error) {
+        //           console.log(error.stack);
+        //           console.log('Error code: '+error.code);
+        //           console.log('Signal received: '+error.signal);
+        //         }
 
-            stdout += "Stdout: Local Test " + i + ": " + resultPromise.stdout + "\n";
+        //         if (stderr.length != 0) {
+        //             stderr += "Stderr: Test " + i + ": " + stderr + "\n";
+        //         }
 
-        }
-        return [score/allOutputs.length, stdout, stderr];
+        //         stdout += "Stdout: Test " + i + ": " + stdout + "\n";
+        //         if (resultPromise.stdout == allOutputs[i]) {
+        //             score += 1;
+        //         }
+
+        //         // console.log('Child Process STDOUT: '+stdout);
+        //         // console.log('Child Process STDERR: '+stderr);
+        //       });
+
+        //     // console.log(resultPromise);
+
+        // }
+
+        // return [score/allOutputs.length, stdout, stderr];
+        return "404";
     }
+
 }
