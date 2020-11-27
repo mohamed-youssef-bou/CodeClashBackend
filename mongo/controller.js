@@ -547,20 +547,14 @@ module.exports = {
 
     createFile: async function (filePath, submissionCode){
 
-        new Promise ((resolve, reject) => {
-            fs.appendFile(filePath, submissionCode, function (err) {
-                if (err) throw err;
-                console.log('Saved!');
-            });
-        }); 
+        if (await fs.promises.access(filePath))
+            console.log('File exists');
+            await fs.promises.unlink(filePath);
+            console.log('File deleted');
+        
+        await fs.promises.appendFile(filePath, submissionCode);
+            console.log('Saved!');
     },
-
-    // createFile: async function (filePath, submissionCode){
-    //     fs.appendFile(filePath, submissionCode, function (err) {
-    //         if (err) throw err;
-    //         console.log('Saved!');
-    //     });
-    // },
 
     compileAndTestChallenge: async function (submissionCode, challenge){
 
@@ -569,44 +563,47 @@ module.exports = {
         var score = 0;
         var allInputs = challenge.localTests.input.concat(challenge.hiddenTests.input);
         var allOutputs = challenge.localTests.output.concat(challenge.hiddenTests.output);
-        // console.log(allInputs);
-        // console.log(allOutputs);
+
+        console.log(allInputs);
         
         let filePath =""+ process.cwd()+"/codeClash.js";
-        await this.createFile(filePath, submissionCode);
-        console.log("This should be after the 'Saved!'");
+        await this.createFile(filePath, submissionCode); 
         
         // Looping through all the tests 
-        // for (var i = 0; i<allInputs.length;i++) {
+        for (var i = 0; i<allInputs.length;i++) {
             
-        //     let input = toString(allInputs[i]);
-        //     let output = toString(allOutputs[i]);
+            // let input = toString(allInputs[i]);
+            let input = allInputs[i].toString();
+            let output = allOutputs[i].toString();
 
-        //     // let resultPromise = await node.runSource(submissionCode, {stdin: input});
+            // let resultPromise = await node.runSource(submissionCode, {stdin: input});
 
-        //     const resultPromise = execFile(""+filePath+" "+input, function (error, stdout, stderr) {
-        //         if (error) {
-        //           console.log(error.stack);
-        //           console.log('Error code: '+error.code);
-        //           console.log('Signal received: '+error.signal);
-        //         }
+            let command = "node "+filePath+" "+input;
+            console.log(command);
 
-        //         if (stderr.length != 0) {
-        //             stderr += "Stderr: Test " + i + ": " + stderr + "\n";
-        //         }
+            const resultPromise = execFile(command, function (error, stdout, stderr) {
+                if (error) {
+                  console.log(error.stack);
+                  console.log('Error code: '+error.code);
+                  console.log('Signal received: '+error.signal);
+                }
 
-        //         stdout += "Stdout: Test " + i + ": " + stdout + "\n";
-        //         if (resultPromise.stdout == allOutputs[i]) {
-        //             score += 1;
-        //         }
+                // if (stderr.length != 0) {
+                //     stderr += "Stderr: Test " + i + ": " + stderr + "\n";
+                // }
 
-        //         // console.log('Child Process STDOUT: '+stdout);
-        //         // console.log('Child Process STDERR: '+stderr);
-        //       });
+                // stdout += "Stdout: Test " + i + ": " + stdout + "\n";
+                // if (resultPromise.stdout == allOutputs[i]) {
+                //     score += 1;
+                // }
 
-        //     // console.log(resultPromise);
+                console.log('Child Process STDOUT: ' + stdout);
+                console.log('Child Process STDERR: '+stderr);
+              });
 
-        // }
+            // console.log(resultPromise);
+
+        }
 
         // return [score/allOutputs.length, stdout, stderr];
         return "404";
