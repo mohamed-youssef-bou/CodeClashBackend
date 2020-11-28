@@ -545,6 +545,8 @@ module.exports = {
 
     compileAndTestChallenge: async function (submissionCode, challenge){
 
+        var error = "none";
+
         var functionSignature = submissionCode.split("(")[0].split(" ")[1];
 
         var inputLocalArray = JSON.parse(challenge.localTests.input);
@@ -569,6 +571,12 @@ module.exports = {
 
             let sourcePromise = await node.runSource(sourceCode).catch(err => {console.log(err)});
 
+            if(sourcePromise.stderr.includes("TypeError")){
+                error = "runtime error";
+            } else if(sourcePromise.stderr.includes("compile")){
+                error = "compilation error";
+            } 
+
             if(sourcePromise.stdout === output + "\n" || sourcePromise.stdout === output){
                 count++;
             }
@@ -578,7 +586,7 @@ module.exports = {
         var score = Math.round(10000 * (count / totalScore)) / 100;
 
         // Score, tests passed
-        return [score, count];
+        return [score, count, error];
         
     }
 
