@@ -547,15 +547,20 @@ module.exports = {
 
         var functionSignature = submissionCode.split("(")[0].split(" ")[1];
 
-        var allInputs = challenge.localTests.input.concat(challenge.hiddenTests.input);
-        var allOutputs = challenge.localTests.output.concat(challenge.hiddenTests.output);
-        
+        var inputLocalArray = JSON.parse(challenge.localTests.input);
+        var outputLocalArray = JSON.parse(challenge.localTests.output);
+
+        var inputHiddenArray = JSON.parse(challenge.hiddenTests.input);
+        var outputHiddenArray = JSON.parse(challenge.hiddenTests.output);
+
+        var allInputs = inputLocalArray.concat(inputHiddenArray);
+        var allOutputs = outputLocalArray.concat(outputHiddenArray);
+
         var count = 0;
 
         // Looping through all the tests 
         for (var i = 0; i < allInputs.length; i++) {
             
-            // let input = toString(allInputs[i]);
             let input = allInputs[i].toString();
             let output = allOutputs[i].toString();
 
@@ -563,13 +568,14 @@ module.exports = {
             let sourceCode = main + submissionCode;
 
             let sourcePromise = await node.runSource(sourceCode).catch(err => {console.log(err)});
-            
-            if(sourcePromise.stdout === output + "\n"){
+
+            if(sourcePromise.stdout === output + "\n" || sourcePromise.stdout === output){
                 count++;
             }
         }
 
-        var score = Math.round(10000 * (count / allInputs.length)) / 100;
+        var totalScore = allInputs.length;
+        var score = Math.round(10000 * (count / totalScore)) / 100;
 
         // Score, tests passed
         return [score, count];
