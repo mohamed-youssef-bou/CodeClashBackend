@@ -555,6 +555,8 @@ module.exports = {
 
     compileAndTestChallenge: async function (submissionCode, challenge){
 
+        var functionSignature = submissionCode.split("(")[0].split(" ")[1];
+
         var allInputs = challenge.localTests.input.concat(challenge.hiddenTests.input);
         var allOutputs = challenge.localTests.output.concat(challenge.hiddenTests.output);
         
@@ -567,7 +569,7 @@ module.exports = {
             let input = allInputs[i].toString();
             let output = allOutputs[i].toString();
 
-            let main = "(function(){console.log(codeClash(" + input +"));})(); "; 
+            let main = "(function(){console.log(" + functionSignature + "(" + input +"));})(); "; 
             let sourceCode = main + submissionCode;
 
             let sourcePromise = await node.runSource(sourceCode).catch(err => {console.log(err)});
