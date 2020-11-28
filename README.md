@@ -177,7 +177,8 @@ Following what was written in the Gherkin Feature file:
 ### POST `/submitChallenge`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
-| Delete a challenge  | **body**: challengeId, submissionCode, writerId | status , [ score_percentage , number_of_tests_passed ]
+| Submitting a challenge  | **body**: challengeId, submissionCode, writerId | status , [ score_percentage , number_of_tests_passed ]
+
 
 
 Following what was written in the Gherkin Feature file:
@@ -201,3 +202,5 @@ INCOMPLETE
 
 
 ------------------------------------------------------------
+
+<!-- console.log(hello); function factorial(x) { if (x === 0) { return 1; } return x * factorial(x-1); } console.log(process.argv[2]);//console.log(factorial(parseInt(process.argv[2]))); -->

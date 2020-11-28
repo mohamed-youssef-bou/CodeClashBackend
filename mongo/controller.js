@@ -1,6 +1,10 @@
 const ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcrypt');
 const validator = require("validator");
+const {node} = require('compile-run');
+const { execFile } = require('child_process');
+const fs = require('fs');
+const util = require('util');
 
 const creationSuccess = ["201", "Successfully created user."];
 const deletionSuccess = ["201", "Successfully deleted user."];
@@ -31,6 +35,7 @@ const challengeCannotAttempt = ["400", "Challenge can no longer be solved"];
 const challengeCloserIdMatchError = ["400", "Closer ID does not match creator ID."];
 const challengeIncorrectAuthor = ["400", "Incorrect author."];
 const nonExistingChallenge = ["404", "Challenge doesn't exist."];
+const testingError = ["404", "Testing error"];
 
 // Required for linking javascript files
 module.exports = {
@@ -494,6 +499,8 @@ module.exports = {
 
     submitChallenge: async function (challengeId, submissionCode, writerId, database){
 
+        var score = 0;
+
         // Get challenge from db
         var challenge = await database.collection("challenges").findOne({_id: ObjectId(challengeId)});
 
@@ -507,12 +514,12 @@ module.exports = {
             return nonExistingUserError;
         }
 
-        var result = 5; //TODO: compileChallenge(submissionCode, challenge);
+        var result = await this.compileAndTestChallenge(submissionCode, challenge);
 
         const response = await database.collection("submission").insertOne({
             "challengeId": challenge._id,
             "writerId": writerId,
-            "score": result,
+            "score": result[0],
             "submissionCode": submissionCode,
             "completionTime": new Date(),
         });
@@ -527,11 +534,46 @@ module.exports = {
             {"_id": ObjectId(writerId)},
             {
                 $set: {
-                    "submissions": newSubmissionList
+                    "submissions": newSubmissionList,
+                    "score": result[0]/10 + user.score
                 }
             }
         )
 
         return ["200", result]
+    },
+
+    compileAndTestChallenge: async function (submissionCode, challenge){
+
+        var functionSignature = submissionCode.split("(")[0].split(" ")[1];
+
+        var allInputs = challenge.localTests.input.concat(challenge.hiddenTests.input);
+        var allOutputs = challenge.localTests.output.concat(challenge.hiddenTests.output);
+        
+        var count = 0;
+
+        // Looping through all the tests 
+        for (var i = 0; i < allInputs.length; i++) {
+            
+            // let input = toString(allInputs[i]);
+            let input = allInputs[i].toString();
+            let output = allOutputs[i].toString();
+
+            let main = "(function(){console.log(" + functionSignature + "(" + input +"));})(); "; 
+            let sourceCode = main + submissionCode;
+
+            let sourcePromise = await node.runSource(sourceCode).catch(err => {console.log(err)});
+            
+            if(sourcePromise.stdout === output + "\n"){
+                count++;
+            }
+        }
+
+        var score = Math.round(10000 * (count / allInputs.length)) / 100;
+
+        // Score, tests passed
+        return [score, count];
+        
     }
+
 }
