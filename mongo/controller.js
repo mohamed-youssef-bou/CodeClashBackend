@@ -547,12 +547,12 @@ module.exports = {
 
     createFile: async function (filePath, submissionCode){
 
-        if (await fs.promises.access(filePath))
-            console.log('File exists');
-            await fs.promises.unlink(filePath);
-            console.log('File deleted');
+        // if (await fs.promises.access(filePath))
+        //     console.log('File exists');
+        //     await fs.promises.unlink(filePath);
+        //     console.log('File deleted');
         
-        await fs.promises.appendFile(filePath, submissionCode);
+        await fs.promises.writeFile(filePath, submissionCode);
             console.log('Saved!');
     },
 
@@ -576,17 +576,21 @@ module.exports = {
             let input = allInputs[i].toString();
             let output = allOutputs[i].toString();
 
+            // var result = await this.executeFile(filePath, input);
+            console.log("entering promise");
+            execFile('node', [filePath,input], (err, stdout, stderr) => {
+                if (err) {
+                    console.log("This is err:"+err);
+                } else {
+                    console.log("This is std:"+stdout);
+                }
+            });
+
+
             // let resultPromise = await node.runSource(submissionCode, {stdin: input});
 
-            let command = "node "+filePath+" "+input;
-            console.log(command);
-
-            const resultPromise = execFile(command, function (error, stdout, stderr) {
-                if (error) {
-                  console.log(error.stack);
-                  console.log('Error code: '+error.code);
-                  console.log('Signal received: '+error.signal);
-                }
+            // let command = "node "+filePath+" "+input;
+            // console.log("command");
 
                 // if (stderr.length != 0) {
                 //     stderr += "Stderr: Test " + i + ": " + stderr + "\n";
@@ -597,12 +601,9 @@ module.exports = {
                 //     score += 1;
                 // }
 
-                console.log('Child Process STDOUT: ' + stdout);
-                console.log('Child Process STDERR: '+stderr);
-              });
+
 
             // console.log(resultPromise);
-
         }
 
         // return [score/allOutputs.length, stdout, stderr];
