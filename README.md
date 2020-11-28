@@ -177,7 +177,8 @@ Following what was written in the Gherkin Feature file:
 ### POST `/submitChallenge`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
-| Submitting a challenge  | **body**: challengeId, submissionCode, writerId | 200, "Successfully submitted challenge" 
+| Submitting a challenge  | **body**: challengeId, submissionCode, writerId | status , [ score_percentage , number_of_tests_passed ]
+
 
 
 Following what was written in the Gherkin Feature file:
