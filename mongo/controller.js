@@ -534,17 +534,7 @@ module.exports = {
             {"_id": ObjectId(writerId)},
             {
                 $set: {
-                    "submissions": newSubmissionList
-                }
-            }
-        )
-
-        // Save submissionId in user list
-        await database.collection("users").updateOne(
-            {"_id": ObjectId(writerId)},
-            {
-                $set: {
-                    // Score cumulates total score + range of 10 points
+                    "submissions": newSubmissionList,
                     "score": result[0]/10 + user.score
                 }
             }
@@ -574,7 +564,7 @@ module.exports = {
 
             let sourcePromise = await node.runSource(sourceCode).catch(err => {console.log(err)});
             
-            if(sourcePromise.stdout == output + "\n"){
+            if(sourcePromise.stdout === output + "\n"){
                 count++;
             }
         }

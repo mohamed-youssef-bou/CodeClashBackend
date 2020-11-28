@@ -1,1 +1,0 @@
-function codeClash(input){return input}
