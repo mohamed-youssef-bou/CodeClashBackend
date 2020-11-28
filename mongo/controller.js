@@ -535,7 +535,7 @@ module.exports = {
             {
                 $set: {
                     "submissions": newSubmissionList,
-                    "score": result[0]/10 + user.score
+                    "score": result[0] + user.score
                 }
             }
         )
