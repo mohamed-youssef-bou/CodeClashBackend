@@ -15,8 +15,8 @@ const challengeName = "Max Height";
 const challengeName2 = "Max Height 2.0";
 const description = "Given a list of x and y coordinates that make up a 2D function, find the 2 points, (x, y) coordinates, upon where there is the largest increase from one point to another in the y axis and return the difference in height.";
 const funcSignature = "int maxHeight(std::vector<tuple<int, int>>)"
-const localTests = "{\"input\": \"[(1,2), (2,2), (3,4)]}]\", \"output\": 2}";
-const hiddenTests = "{\"input\": \"[(5,5), (1,8), (1,23)]}]\", \"output\": 15}";
+const localTests = "{\"input\": \"[(1,2), (2,2), (3,4)]\", \"output\": \"2\"}";
+const hiddenTests = "{\"input\": \"[(5,5), (1,8), (1,23)]\", \"output\": \"15\"}";
 const solution = "int maxHeight(std::vector<tuple<int, int>>){return 2}";
 const languages = "c++";
 
@@ -380,5 +380,80 @@ describe('Delete challenge', () => {
     expect(response[0]).toEqual("400");
     expect(response[1]).toEqual('Incorrect author.');
   });
+});
+
+describe('Submit code', () => {
+
+    const submissionCode = "function factorial(n) {if (n == 0 || n == 1)return 1;return factorial(n-1) * n;}";
+    const compilationError = "function factorial(n)if (n == 0 || n == 1)return 1;return factorial(n-1) * n;";
+    const runtimeError = "function factorial(n) {var test = 0; test.then(result=>{console.log(result)}); if (n == 0 || n == 1)return 1;return factorial(n-1) * n;}";
+
+    beforeAll(async () => {
+      await dbConnection.start();
+    });
+  
+    beforeEach(async () => {
+      await controller.create_user(username, email, password, dbConnection.db);
+      var user = await controller.getUserByUsername(username, dbConnection.db);
+      var creatorId = user["_id"].toString();
+      await controller.createChallenge(dbConnection.db, "Factorial", creatorId,
+          description, languages, funcSignature,
+          solution, "{\"input\": \"[1, 0, 2]\", \"output\": \"[1, 1, 2]\"}", "{\"input\": \"[5, 4]\", \"output\": \"[120, 24]\"}");
+    });
+  
+    afterEach(async () => {
+      await dbConnection.cleanup();
+      await dbConnection.stop();
+      await dbConnection.start();
+    });
+  
+    afterAll(async () => {
+      await dbConnection.stop();
+    });
+  
+    it('Successfully submit challenge with perfect score', async () => {
+        var challenge = await controller.getChallengeByName("Factorial", dbConnection.db);
+        var challengeId = challenge["_id"].toString();
+        await controller.create_user("todd", "todd.c@ma.com", password, dbConnection.db);
+        var user = await controller.getUserByUsername("todd", dbConnection.db);
+
+        expect(user.score).toEqual(0);
+
+        await controller.submitChallenge(challengeId, submissionCode, user._id, dbConnection.db);
+        user = await controller.getUserByUsername("todd", dbConnection.db);
+
+        expect(user.score).toEqual(100);
+
+    });
+
+    it('Failed submission with compilation error', async () => {
+        var challenge = await controller.getChallengeByName("Factorial", dbConnection.db);
+        var challengeId = challenge["_id"].toString();
+        await controller.create_user("todd", "todd.c@ma.com", password, dbConnection.db);
+        var user = await controller.getUserByUsername("todd", dbConnection.db);
+
+        expect(user.score).toEqual(0);
+
+        await controller.submitChallenge(challengeId, compilationError, user._id, dbConnection.db);
+        user = await controller.getUserByUsername("todd", dbConnection.db);
+
+        expect(user.score).toEqual(0);
+
+    });
+
+    it('Failed submission with runtime error', async () => {
+        var challenge = await controller.getChallengeByName("Factorial", dbConnection.db);
+        var challengeId = challenge["_id"].toString();
+        await controller.create_user("todd", "todd.c@ma.com", password, dbConnection.db);
+        var user = await controller.getUserByUsername("todd", dbConnection.db);
+
+        expect(user.score).toEqual(0);
+
+        await controller.submitChallenge(challengeId, runtimeError, user._id, dbConnection.db);
+        user = await controller.getUserByUsername("todd", dbConnection.db);
+
+        expect(user.score).toEqual(0);
+
+    });
 
 });
