@@ -499,6 +499,8 @@ module.exports = {
 
     submitChallenge: async function (challengeId, submissionCode, writerId, database){
 
+        var score = 0;
+
         // Get challenge from db
         var challenge = await database.collection("challenges").findOne({_id: ObjectId(challengeId)});
 
@@ -514,15 +516,10 @@ module.exports = {
 
         var result = await this.compileAndTestChallenge(submissionCode, challenge);
 
-        if (result == "404") {
-            return testingError;
-        }
-
         const response = await database.collection("submission").insertOne({
             "challengeId": challenge._id,
             "writerId": writerId,
             "score": result[0],
-            // "score": result,
             "submissionCode": submissionCode,
             "completionTime": new Date(),
         });
@@ -542,72 +539,49 @@ module.exports = {
             }
         )
 
+        // Save submissionId in user list
+        await database.collection("users").updateOne(
+            {"_id": ObjectId(writerId)},
+            {
+                $set: {
+                    // Score cumulates total score + range of 10 points
+                    "score": result[0]/10 + user.score
+                }
+            }
+        )
+
         return ["200", result]
-    },
-
-    createFile: async function (filePath, submissionCode){
-
-        // if (await fs.promises.access(filePath))
-        //     console.log('File exists');
-        //     await fs.promises.unlink(filePath);
-        //     console.log('File deleted');
-        
-        await fs.promises.writeFile(filePath, submissionCode);
-            console.log('Saved!');
     },
 
     compileAndTestChallenge: async function (submissionCode, challenge){
 
-        var stdout = "";
-        var stderr = "";
-        var score = 0;
         var allInputs = challenge.localTests.input.concat(challenge.hiddenTests.input);
         var allOutputs = challenge.localTests.output.concat(challenge.hiddenTests.output);
+        
+        var count = 0;
 
-        console.log(allInputs);
-        
-        let filePath =""+ process.cwd()+"/codeClash.js";
-        await this.createFile(filePath, submissionCode); 
-        
         // Looping through all the tests 
-        for (var i = 0; i<allInputs.length;i++) {
+        for (var i = 0; i < allInputs.length; i++) {
             
             // let input = toString(allInputs[i]);
             let input = allInputs[i].toString();
             let output = allOutputs[i].toString();
 
-            // var result = await this.executeFile(filePath, input);
-            console.log("entering promise");
-            execFile('node', [filePath,input], (err, stdout, stderr) => {
-                if (err) {
-                    console.log("This is err:"+err);
-                } else {
-                    console.log("This is std:"+stdout);
-                }
-            });
+            let main = "(function(){console.log(codeClash(" + input +"));})(); "; 
+            let sourceCode = main + submissionCode;
 
-
-            // let resultPromise = await node.runSource(submissionCode, {stdin: input});
-
-            // let command = "node "+filePath+" "+input;
-            // console.log("command");
-
-                // if (stderr.length != 0) {
-                //     stderr += "Stderr: Test " + i + ": " + stderr + "\n";
-                // }
-
-                // stdout += "Stdout: Test " + i + ": " + stdout + "\n";
-                // if (resultPromise.stdout == allOutputs[i]) {
-                //     score += 1;
-                // }
-
-
-
-            // console.log(resultPromise);
+            let sourcePromise = await node.runSource(sourceCode).catch(err => {console.log(err)});
+            
+            if(sourcePromise.stdout == output + "\n"){
+                count++;
+            }
         }
 
-        // return [score/allOutputs.length, stdout, stderr];
-        return "404";
+        var score = Math.round(10000 * (count / allInputs.length)) / 100;
+
+        // Score, tests passed
+        return [score, count];
+        
     }
 
 }
