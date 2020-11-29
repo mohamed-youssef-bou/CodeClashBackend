@@ -367,7 +367,7 @@ describe('Leaderboard', () => {
     await dbConnection.stop();
   });
 
-  it('Get populated leaderboard successfully', async () => {
+  it('Successfully return leaderboard', async () => {
     const database = dbConnection.db;
     for (let user of users) {
       await controller.create_user(user[0], user[1], user[2], dbConnection.db);
@@ -392,6 +392,38 @@ describe('Leaderboard', () => {
     const returnedLeaderboard = await controller.getLeaderboard(dbConnection.db);
 
     expect(JSON.stringify(returnedLeaderboard)).toEqual(JSON.stringify(expectedLeaderboard));
+  });
+
+  it('Alternate return leaderboard', async () => {
+    const database = dbConnection.db;
+    for (let user of users) {
+      await controller.create_user(user[0], user[1], user[2], dbConnection.db);
+      await database.collection("users").updateOne(
+          {"username": user[0]},
+          {
+            $set: {
+              "score": user[3]
+            },
+            $currentDate: {lastModified: true}
+          }
+      );
+    }
+
+    var user_record = await database.collection("users").findOne({"username": "Boss"});
+
+    await database.collection("users").updateOne({"username": user_record.username}, {$set: {"score": user_record.score + 100}})
+
+    const expectedLeaderboard = [
+      {username: 'Boss', score: 125},
+      {username: 'Chief', score: 100},
+      {username: 'Baws', score: 25},
+      {username: 'Null', score: 0}
+    ];
+
+    const returnedLeaderboard = await controller.getLeaderboard(dbConnection.db);
+
+    expect(JSON.stringify(returnedLeaderboard)).toEqual(JSON.stringify(expectedLeaderboard));
+    
   });
 
 });
