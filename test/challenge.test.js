@@ -285,6 +285,50 @@ describe('Query all challenges', () => {
 
   });
 
+  describe('Start challenge', () => {
+    
+    var creatorId;
+
+    beforeAll(async () => {
+      await dbConnection.start();
+    });
+
+    beforeEach(async () => {
+        await controller.create_user(username, email, password, dbConnection.db);
+        var user = await controller.getUserByUsername(username, dbConnection.db);
+        creatorId = user["_id"].toString();
+        await controller.createChallenge(dbConnection.db, challengeName, creatorId,
+                                         description, languages, funcSignature,
+                                         solution, localTests, hiddenTests);
+      });
+  
+    afterEach(async () => {
+      await dbConnection.cleanup();
+    });
+  
+    afterAll(async () => {
+      await dbConnection.stop();
+    });
+  
+    it('Successfully starts a challenge', async () => {
+       
+        expect(0).toEqual(0);
+    });
+
+    it('Failed to start challenge user created', async () => {
+        var challenge = await controller.getChallengeByName(challengeName, dbConnection.db);
+        expect(challenge.creatorId).toEqual(creatorId);
+    });
+
+    it('Failed to start challenge as it is closed', async () => {
+        var challenge = await controller.getChallengeByName(challengeName, dbConnection.db);
+        var response = await controller.closeChallenge(dbConnection.db, challenge.creatorId, challengeName, challenge._id);
+        expect(challenge.dateClosed).not.toEqual("");
+
+    });
+  });
+
+
 describe('Close challenge', () => {
 
     beforeAll(async () => {

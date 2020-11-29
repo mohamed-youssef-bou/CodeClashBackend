@@ -9,7 +9,7 @@ module.exports = {
     // }
 
     getMongoUri: function(){
-        return "***REMOVED***";
+        return "mongodb+srv://Codeclash:Codeclash19!@cluster0.95u1y.azure.mongodb.net/CodeClash?retryWrites=true&w=majority";
     }
 
 }
