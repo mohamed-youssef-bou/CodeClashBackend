@@ -1,6 +1,18 @@
 # CodeClash Backend
 
-### Usage
+## About the project
+
+This repository was developed with [Express.js](https://expressjs.com/) and serves as the backend code base for the CodeClash competitive programming platform. On this platform, users can sign up, take on programming challenges, and create their own to share with others! Each completed challenge increases the programmer's score and raises their position on the global leaderboard. 
+
+In this repository, we also use:
+* [Passport.js](http://www.passportjs.org/) for secure authentication of users with JSON Web Tokens (JWTs)
+* [MongoDB](https://docs.mongodb.com/drivers/node/) to flexibly persist app data
+* [Jest](https://jestjs.io/) for unit testing 
+* [Travis CI](https://travis-ci.com/) for continuous integration
+
+Find out more about the React app serviced by the Express server in the [repository linked here](https://github.com/mohamed-youssef-bou/CodeClashFrontend/). 
+
+## Usage
 Install npm v6.14.8 and node v12.19.0 (LTS versions). Using nvm is also very useful in order to switch between node versions.
 
 Run npm install to get all the dependencies specified in package.json
@@ -11,12 +23,9 @@ Start development server by typing: **yarn dev** while in the backend directory.
 <br>
 To run tests, after installing jest, type ***npm run test*** from root directory
 
-### Endpoints
-All below endpoints require: http://localhost:9000/ for testing
-<br>
-<br>
+## Endpoints
+All endpoints below require: http://localhost:9000/ for testing
 
-------------------------------------------------------------
 ### POST `/createUser`
 | Usage  | Parameters | Returns |
 | ------------- | ------------- | ------------- |
